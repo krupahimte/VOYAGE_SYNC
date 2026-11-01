@@ -1,0 +1,30 @@
+{
+  "_note": "Reference table (public IATA codes, approximate airport coordinates) used by the mock flight provider. Not an API recording.",
+  "cities": {
+    "Mumbai": {"iata": "BOM", "name": "Chhatrapati Shivaji Maharaj International Airport", "city": "Mumbai", "latitude": 19.0896, "longitude": 72.8656},
+    "Delhi": {"iata": "DEL", "name": "Indira Gandhi International Airport", "city": "Delhi", "latitude": 28.5562, "longitude": 77.1},
+    "New Delhi": {"iata": "DEL", "name": "Indira Gandhi International Airport", "city": "Delhi", "latitude": 28.5562, "longitude": 77.1},
+    "Bengaluru": {"iata": "BLR", "name": "Kempegowda International Airport", "city": "Bengaluru", "latitude": 13.1986, "longitude": 77.7066},
+    "Bangalore": {"iata": "BLR", "name": "Kempegowda International Airport", "city": "Bengaluru", "latitude": 13.1986, "longitude": 77.7066},
+    "Goa": {"iata": "GOI", "name": "Dabolim Airport", "city": "Goa", "latitude": 15.3808, "longitude": 73.8314},
+    "Jaipur": {"iata": "JAI", "name": "Jaipur International Airport", "city": "Jaipur", "latitude": 26.8242, "longitude": 75.8122},
+    "Santorini": {"iata": "JTR", "name": "Santorini (Thira) International Airport", "city": "Santorini", "latitude": 36.3992, "longitude": 25.4793},
+    "Athens": {"iata": "ATH", "name": "Athens International Airport", "city": "Athens", "latitude": 37.9364, "longitude": 23.9445},
+    "London": {"iata": "LHR", "name": "Heathrow Airport", "city": "London", "latitude": 51.47, "longitude": -0.4543},
+    "Paris": {"iata": "CDG", "name": "Charles de Gaulle Airport", "city": "Paris", "latitude": 49.0097, "longitude": 2.5479},
+    "Lisbon": {"iata": "LIS", "name": "Humberto Delgado Airport", "city": "Lisbon", "latitude": 38.7742, "longitude": -9.1342},
+    "Rome": {"iata": "FCO", "name": "Leonardo da Vinci–Fiumicino Airport", "city": "Rome", "latitude": 41.8003, "longitude": 12.2389},
+    "Barcelona": {"iata": "BCN", "name": "Josep Tarradellas Barcelona–El Prat Airport", "city": "Barcelona", "latitude": 41.2974, "longitude": 2.0833},
+    "Amsterdam": {"iata": "AMS", "name": "Amsterdam Airport Schiphol", "city": "Amsterdam", "latitude": 52.3105, "longitude": 4.7683},
+    "Istanbul": {"iata": "IST", "name": "Istanbul Airport", "city": "Istanbul", "latitude": 41.2753, "longitude": 28.7519},
+    "Reykjavik": {"iata": "KEF", "name": "Keflavík International Airport", "city": "Reykjavik", "latitude": 63.985, "longitude": -22.6056},
+    "Dubai": {"iata": "DXB", "name": "Dubai International Airport", "city": "Dubai", "latitude": 25.2532, "longitude": 55.3657},
+    "Singapore": {"iata": "SIN", "name": "Singapore Changi Airport", "city": "Singapore", "latitude": 1.3644, "longitude": 103.9915},
+    "Bangkok": {"iata": "BKK", "name": "Suvarnabhumi Airport", "city": "Bangkok", "latitude": 13.69, "longitude": 100.7501},
+    "Bali": {"iata": "DPS", "name": "Ngurah Rai International Airport", "city": "Denpasar", "latitude": -8.7482, "longitude": 115.167},
+    "Tokyo": {"iata": "HND", "name": "Tokyo Haneda Airport", "city": "Tokyo", "latitude": 35.5494, "longitude": 139.7798},
+    "Kyoto": {"iata": "KIX", "name": "Kansai International Airport", "city": "Osaka", "latitude": 34.432, "longitude": 135.2304},
+    "Sydney": {"iata": "SYD", "name": "Sydney Kingsford Smith Airport", "city": "Sydney", "latitude": -33.9399, "longitude": 151.1753},
+    "New York": {"iata": "JFK", "name": "John F. Kennedy International Airport", "city": "New York", "latitude": 40.6413, "longitude": -73.7781}
+  }
+}

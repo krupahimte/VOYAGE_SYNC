@@ -1,0 +1,113 @@
+{
+  "results": [
+    {
+      "id": 1880252,
+      "name": "Singapore",
+      "latitude": 1.28967,
+      "longitude": 103.85007,
+      "elevation": 23.0,
+      "feature_code": "PPLC",
+      "country_code": "SG",
+      "timezone": "Asia/Singapore",
+      "population": 5638700,
+      "country_id": 1880251,
+      "country": "Singapore"
+    },
+    {
+      "id": 1880251,
+      "name": "Singapore",
+      "latitude": 1.36667,
+      "longitude": 103.8,
+      "elevation": 42.0,
+      "feature_code": "PCLI",
+      "country_code": "SG",
+      "timezone": "Asia/Singapore",
+      "population": 5638676,
+      "country_id": 1880251,
+      "country": "Singapore"
+    },
+    {
+      "id": 955514,
+      "name": "Singapore",
+      "latitude": -24.56233,
+      "longitude": 29.31502,
+      "elevation": 911.0,
+      "feature_code": "PPL",
+      "country_code": "ZA",
+      "admin1_id": 1085597,
+      "admin2_id": 8347375,
+      "admin3_id": 8347406,
+      "timezone": "Africa/Johannesburg",
+      "country_id": 953987,
+      "country": "South Africa",
+      "admin1": "Limpopo",
+      "admin2": "Waterberg District Municipality",
+      "admin3": "Mookgopong"
+    },
+    {
+      "id": 1880249,
+      "name": "Singapore Island",
+      "latitude": 1.36667,
+      "longitude": 103.8,
+      "elevation": 42.0,
+      "feature_code": "ISL",
+      "country_code": "SG",
+      "timezone": "Asia/Singapore",
+      "country_id": 1880251,
+      "country": "Singapore"
+    },
+    {
+      "id": 1880725,
+      "name": "Singapore Changi Airport",
+      "latitude": 1.35514,
+      "longitude": 103.99006,
+      "elevation": 6.0,
+      "feature_code": "AIRP",
+      "country_code": "SG",
+      "timezone": "Asia/Singapore",
+      "country_id": 1880251,
+      "country": "Singapore"
+    },
+    {
+      "id": 1880247,
+      "name": "Singapore United Plantation",
+      "latitude": 1.37917,
+      "longitude": 103.85778,
+      "elevation": 22.0,
+      "feature_code": "PPLL",
+      "country_code": "SG",
+      "timezone": "Asia/Singapore",
+      "country_id": 1880251,
+      "country": "Singapore"
+    },
+    {
+      "id": 1882534,
+      "name": "Singapore Tuas West Highway",
+      "latitude": 1.33194,
+      "longitude": 103.64083,
+      "elevation": 14.0,
+      "feature_code": "AIRF",
+      "country_code": "SG",
+      "timezone": "Asia/Singapore",
+      "country_id": 1880251,
+      "country": "Singapore"
+    },
+    {
+      "id": 7250833,
+      "name": "Singapore, Michigan Historical Marker",
+      "latitude": 42.65606,
+      "longitude": -86.20317,
+      "elevation": 182.0,
+      "feature_code": "PRK",
+      "country_code": "US",
+      "admin1_id": 5001836,
+      "admin2_id": 4983990,
+      "timezone": "America/Detroit",
+      "country_id": 6252001,
+      "country": "United States",
+      "admin1": "Michigan",
+      "admin2": "Allegan"
+    }
+  ],
+  "generationtime_ms": 0.7464886
+}

@@ -1,0 +1,62 @@
+{
+  "latitude": 38.69947,
+  "longitude": -9.196167,
+  "generationtime_ms": 0.1976490020751953,
+  "utc_offset_seconds": 3600,
+  "timezone": "Europe/Lisbon",
+  "timezone_abbreviation": "GMT+1",
+  "elevation": 54.0,
+  "daily_units": {
+    "time": "iso8601",
+    "weather_code": "wmo code",
+    "temperature_2m_max": "°C",
+    "temperature_2m_min": "°C",
+    "precipitation_sum": "mm",
+    "wind_speed_10m_max": "km/h"
+  },
+  "daily": {
+    "time": [
+      "2026-05-10",
+      "2026-05-11",
+      "2026-05-12",
+      "2026-05-13",
+      "2026-05-14"
+    ],
+    "weather_code": [
+      61,
+      53,
+      63,
+      53,
+      3
+    ],
+    "temperature_2m_max": [
+      17.4,
+      18.4,
+      18.7,
+      19.3,
+      20.1
+    ],
+    "temperature_2m_min": [
+      13.1,
+      13.1,
+      12.7,
+      12.7,
+      12.7
+    ],
+    "precipitation_sum": [
+      7.1,
+      3.2,
+      4.2,
+      1.2,
+      0.0
+    ],
+    "wind_speed_10m_max": [
+      31.7,
+      20.1,
+      18.1,
+      12.0,
+      23.0
+    ]
+  },
+  "_recorded_year": 2026
+}

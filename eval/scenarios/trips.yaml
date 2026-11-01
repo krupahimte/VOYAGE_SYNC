@@ -1,0 +1,53 @@
+# Trip templates for the disruption benchmark (plan §6.6).
+# Domestic and international, 3–7 nights, solo, couples and groups, several currencies and styles.
+# Every city is covered by the recorded/mock providers, so the benchmark runs offline.
+
+- id: santorini_solo_luxury
+  tags: [international, solo, 5n]
+  goal: {destination: Santorini, departure_city: Mumbai, departure_date: 2027-06-14, return_date: 2027-06-19,
+         travelers: 1, budget: 4000, currency: USD, travel_style: luxury, interests: [relaxation, food]}
+
+- id: goa_couple_domestic
+  tags: [domestic, couple, 3n]
+  goal: {destination: Goa, departure_city: Mumbai, departure_date: 2027-07-01, return_date: 2027-07-04,
+         travelers: 2, budget: 90000, currency: INR, travel_style: balanced, interests: [nature, relaxation]}
+
+- id: jaipur_family_domestic
+  tags: [domestic, group, 3n]
+  goal: {destination: Jaipur, departure_city: Delhi, departure_date: 2027-11-05, return_date: 2027-11-08,
+         travelers: 4, budget: 150000, currency: INR, travel_style: comfort, interests: [culture, shopping]}
+
+- id: tokyo_family_week
+  tags: [international, group, 7n]
+  goal: {destination: Tokyo, departure_city: London, departure_date: 2027-03-01, return_date: 2027-03-08,
+         travelers: 4, budget: 14000, currency: GBP, travel_style: comfort, interests: [culture, food]}
+
+- id: lisbon_solo_budget
+  tags: [international, solo, 4n]
+  goal: {destination: Lisbon, departure_city: Paris, departure_date: 2027-05-10, return_date: 2027-05-14,
+         travelers: 1, budget: 1200, currency: EUR, travel_style: budget, interests: [culture, nightlife]}
+
+- id: reykjavik_friends_adventure
+  tags: [international, group, 5n]
+  goal: {destination: Reykjavik, departure_city: New York, departure_date: 2027-01-10, return_date: 2027-01-15,
+         travelers: 3, budget: 7000, currency: USD, travel_style: balanced, interests: [nature, adventure]}
+
+- id: bali_couple_relax
+  tags: [international, couple, 6n]
+  goal: {destination: Bali, departure_city: Singapore, departure_date: 2027-08-20, return_date: 2027-08-26,
+         travelers: 2, budget: 4500, currency: USD, travel_style: comfort, interests: [relaxation, nature]}
+
+- id: rome_couple_culture
+  tags: [international, couple, 4n]
+  goal: {destination: Rome, departure_city: Barcelona, departure_date: 2027-09-14, return_date: 2027-09-18,
+         travelers: 2, budget: 3000, currency: EUR, travel_style: balanced, interests: [culture, food]}
+
+- id: dubai_solo_shopping
+  tags: [international, solo, 3n]
+  goal: {destination: Dubai, departure_city: Mumbai, departure_date: 2027-12-02, return_date: 2027-12-05,
+         travelers: 1, budget: 3500, currency: USD, travel_style: luxury, interests: [shopping, food]}
+
+- id: kyoto_group_slow
+  tags: [international, group, 6n]
+  goal: {destination: Kyoto, departure_city: Sydney, departure_date: 2027-04-03, return_date: 2027-04-09,
+         travelers: 5, budget: 22000, currency: AUD, travel_style: balanced, interests: [culture, nature]}

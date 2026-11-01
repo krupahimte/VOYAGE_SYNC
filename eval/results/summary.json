@@ -1,0 +1,1084 @@
+{
+  "meta": {
+    "scenarios": 160,
+    "trips": 10,
+    "strategies": [
+      "ours",
+      "b1_full",
+      "b2_naive",
+      "abl_no_contracts",
+      "abl_no_frozen",
+      "abl_no_gate"
+    ],
+    "drift": {
+      "price_pct": 0.08,
+      "drop_pct": 0.15
+    },
+    "drift_modes": [
+      "on",
+      "off"
+    ],
+    "runtime_s": 7.0,
+    "oracle_validation": {
+      "labelled": 71,
+      "agree": 71,
+      "mismatches": []
+    }
+  },
+  "aggregate": {
+    "on": {
+      "ours": {
+        "label": "Ours",
+        "runs": 160,
+        "precision": 0.9963,
+        "recall": 1.0,
+        "f1": 0.9973,
+        "stability": 0.888,
+        "constraint_satisfaction": 0.9975,
+        "all_contracts_hold_pct": 0.9375,
+        "regenerated_mean": 2.275,
+        "failed_nodes": 0,
+        "latency_median_ms": 0.79,
+        "latency_p95_ms": 2.27,
+        "llm_calls_mean": 0.2188,
+        "api_calls_mean": 1.6438,
+        "llm_calls_total": 35,
+        "api_calls_total": 263,
+        "t2_raised": 31,
+        "unsafe_actions": 0,
+        "unsafe_action_rate": 0.0
+      },
+      "b1_full": {
+        "label": "B1 full replan",
+        "runs": 160,
+        "precision": 0.1578,
+        "recall": 1.0,
+        "f1": 0.2517,
+        "stability": 0.3103,
+        "constraint_satisfaction": 0.9975,
+        "all_contracts_hold_pct": 0.9375,
+        "regenerated_mean": 14.3875,
+        "failed_nodes": 0,
+        "latency_median_ms": 4.9,
+        "latency_p95_ms": 9.14,
+        "llm_calls_mean": 4.4938,
+        "api_calls_mean": 14.2625,
+        "llm_calls_total": 719,
+        "api_calls_total": 2282,
+        "t2_raised": 134,
+        "unsafe_actions": 0,
+        "unsafe_action_rate": 0.0
+      },
+      "b2_naive": {
+        "label": "B2 naive downstream",
+        "runs": 160,
+        "precision": 0.4274,
+        "recall": 1.0,
+        "f1": 0.5259,
+        "stability": 0.5536,
+        "constraint_satisfaction": 0.9975,
+        "all_contracts_hold_pct": 0.9375,
+        "regenerated_mean": 6.1875,
+        "failed_nodes": 0,
+        "latency_median_ms": 2.19,
+        "latency_p95_ms": 3.75,
+        "llm_calls_mean": 2.8937,
+        "api_calls_mean": 5.6875,
+        "llm_calls_total": 463,
+        "api_calls_total": 910,
+        "t2_raised": 66,
+        "unsafe_actions": 0,
+        "unsafe_action_rate": 0.0
+      },
+      "abl_no_contracts": {
+        "label": "Ablation: no contracts",
+        "runs": 160,
+        "precision": 0.4274,
+        "recall": 1.0,
+        "f1": 0.5259,
+        "stability": 0.8569,
+        "constraint_satisfaction": 0.9975,
+        "all_contracts_hold_pct": 0.9375,
+        "regenerated_mean": 6.1875,
+        "failed_nodes": 0,
+        "latency_median_ms": 1.98,
+        "latency_p95_ms": 3.09,
+        "llm_calls_mean": 0.225,
+        "api_calls_mean": 5.6875,
+        "llm_calls_total": 36,
+        "api_calls_total": 910,
+        "t2_raised": 41,
+        "unsafe_actions": 0,
+        "unsafe_action_rate": 0.0
+      },
+      "abl_no_frozen": {
+        "label": "Ablation: no frozen context",
+        "runs": 160,
+        "precision": 0.9576,
+        "recall": 1.0,
+        "f1": 0.9712,
+        "stability": 0.8261,
+        "constraint_satisfaction": 0.9975,
+        "all_contracts_hold_pct": 0.9375,
+        "regenerated_mean": 2.4875,
+        "failed_nodes": 0,
+        "latency_median_ms": 0.86,
+        "latency_p95_ms": 2.96,
+        "llm_calls_mean": 0.7312,
+        "api_calls_mean": 1.8562,
+        "llm_calls_total": 117,
+        "api_calls_total": 297,
+        "t2_raised": 34,
+        "unsafe_actions": 0,
+        "unsafe_action_rate": 0.0
+      },
+      "abl_no_gate": {
+        "label": "Ablation: no Risk Gate",
+        "runs": 160,
+        "precision": 0.9963,
+        "recall": 1.0,
+        "f1": 0.9973,
+        "stability": 0.888,
+        "constraint_satisfaction": 0.9975,
+        "all_contracts_hold_pct": 0.9375,
+        "regenerated_mean": 2.275,
+        "failed_nodes": 0,
+        "latency_median_ms": 0.79,
+        "latency_p95_ms": 2.59,
+        "llm_calls_mean": 0.2188,
+        "api_calls_mean": 1.6438,
+        "llm_calls_total": 35,
+        "api_calls_total": 263,
+        "t2_raised": 31,
+        "unsafe_actions": 31,
+        "unsafe_action_rate": 1.0
+      }
+    },
+    "off": {
+      "ours": {
+        "label": "Ours",
+        "runs": 160,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "stability": 0.8893,
+        "constraint_satisfaction": 0.9975,
+        "all_contracts_hold_pct": 0.9375,
+        "regenerated_mean": 2.2375,
+        "failed_nodes": 0,
+        "latency_median_ms": 0.77,
+        "latency_p95_ms": 2.39,
+        "llm_calls_mean": 0.2188,
+        "api_calls_mean": 1.6062,
+        "llm_calls_total": 35,
+        "api_calls_total": 257,
+        "t2_raised": 30,
+        "unsafe_actions": 0,
+        "unsafe_action_rate": 0.0
+      },
+      "b1_full": {
+        "label": "B1 full replan",
+        "runs": 160,
+        "precision": 0.1578,
+        "recall": 1.0,
+        "f1": 0.2517,
+        "stability": 0.8582,
+        "constraint_satisfaction": 0.9975,
+        "all_contracts_hold_pct": 0.9375,
+        "regenerated_mean": 14.3875,
+        "failed_nodes": 0,
+        "latency_median_ms": 4.77,
+        "latency_p95_ms": 9.29,
+        "llm_calls_mean": 4.4938,
+        "api_calls_mean": 14.2625,
+        "llm_calls_total": 719,
+        "api_calls_total": 2282,
+        "t2_raised": 30,
+        "unsafe_actions": 0,
+        "unsafe_action_rate": 0.0
+      },
+      "b2_naive": {
+        "label": "B2 naive downstream",
+        "runs": 160,
+        "precision": 0.4274,
+        "recall": 1.0,
+        "f1": 0.5259,
+        "stability": 0.8582,
+        "constraint_satisfaction": 0.9975,
+        "all_contracts_hold_pct": 0.9375,
+        "regenerated_mean": 6.1875,
+        "failed_nodes": 0,
+        "latency_median_ms": 2.13,
+        "latency_p95_ms": 3.58,
+        "llm_calls_mean": 2.8937,
+        "api_calls_mean": 5.6875,
+        "llm_calls_total": 463,
+        "api_calls_total": 910,
+        "t2_raised": 30,
+        "unsafe_actions": 0,
+        "unsafe_action_rate": 0.0
+      },
+      "abl_no_contracts": {
+        "label": "Ablation: no contracts",
+        "runs": 160,
+        "precision": 0.4274,
+        "recall": 1.0,
+        "f1": 0.5259,
+        "stability": 0.8731,
+        "constraint_satisfaction": 0.9975,
+        "all_contracts_hold_pct": 0.9375,
+        "regenerated_mean": 6.1875,
+        "failed_nodes": 0,
+        "latency_median_ms": 1.89,
+        "latency_p95_ms": 3.22,
+        "llm_calls_mean": 0.225,
+        "api_calls_mean": 5.6875,
+        "llm_calls_total": 36,
+        "api_calls_total": 910,
+        "t2_raised": 30,
+        "unsafe_actions": 0,
+        "unsafe_action_rate": 0.0
+      },
+      "abl_no_frozen": {
+        "label": "Ablation: no frozen context",
+        "runs": 160,
+        "precision": 0.9688,
+        "recall": 1.0,
+        "f1": 0.9792,
+        "stability": 0.8744,
+        "constraint_satisfaction": 0.9975,
+        "all_contracts_hold_pct": 0.9375,
+        "regenerated_mean": 2.3625,
+        "failed_nodes": 0,
+        "latency_median_ms": 0.83,
+        "latency_p95_ms": 2.39,
+        "llm_calls_mean": 0.625,
+        "api_calls_mean": 1.7312,
+        "llm_calls_total": 100,
+        "api_calls_total": 277,
+        "t2_raised": 30,
+        "unsafe_actions": 0,
+        "unsafe_action_rate": 0.0
+      },
+      "abl_no_gate": {
+        "label": "Ablation: no Risk Gate",
+        "runs": 160,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "stability": 0.8893,
+        "constraint_satisfaction": 0.9975,
+        "all_contracts_hold_pct": 0.9375,
+        "regenerated_mean": 2.2375,
+        "failed_nodes": 0,
+        "latency_median_ms": 0.79,
+        "latency_p95_ms": 2.02,
+        "llm_calls_mean": 0.2188,
+        "api_calls_mean": 1.6062,
+        "llm_calls_total": 35,
+        "api_calls_total": 257,
+        "t2_raised": 30,
+        "unsafe_actions": 30,
+        "unsafe_action_rate": 1.0
+      }
+    }
+  },
+  "by_kind": {
+    "on": {
+      "outbound_delay": {
+        "ours": {
+          "runs": 60,
+          "affected_mean": 2.3667,
+          "regenerated_mean": 2.4667,
+          "f1": 0.9929,
+          "stability": 0.8163
+        },
+        "b1_full": {
+          "runs": 60,
+          "affected_mean": 2.3667,
+          "regenerated_mean": 14.2,
+          "f1": 0.2794,
+          "stability": 0.2551
+        },
+        "b2_naive": {
+          "runs": 60,
+          "affected_mean": 2.3667,
+          "regenerated_mean": 8.6,
+          "f1": 0.4092,
+          "stability": 0.289
+        },
+        "abl_no_contracts": {
+          "runs": 60,
+          "affected_mean": 2.3667,
+          "regenerated_mean": 8.6,
+          "f1": 0.4092,
+          "stability": 0.764
+        },
+        "abl_no_frozen": {
+          "runs": 60,
+          "affected_mean": 2.3667,
+          "regenerated_mean": 2.7333,
+          "f1": 0.9731,
+          "stability": 0.7743
+        },
+        "abl_no_gate": {
+          "runs": 60,
+          "affected_mean": 2.3667,
+          "regenerated_mean": 2.4667,
+          "f1": 0.9929,
+          "stability": 0.8163
+        }
+      },
+      "return_delay": {
+        "ours": {
+          "runs": 20,
+          "affected_mean": 0.5,
+          "regenerated_mean": 0.5,
+          "f1": 1.0,
+          "stability": 0.9404
+        },
+        "b1_full": {
+          "runs": 20,
+          "affected_mean": 0.5,
+          "regenerated_mean": 14.2,
+          "f1": 0.0679,
+          "stability": 0.2795
+        },
+        "b2_naive": {
+          "runs": 20,
+          "affected_mean": 0.5,
+          "regenerated_mean": 2.0,
+          "f1": 0.3333,
+          "stability": 0.8808
+        },
+        "abl_no_contracts": {
+          "runs": 20,
+          "affected_mean": 0.5,
+          "regenerated_mean": 2.0,
+          "f1": 0.3333,
+          "stability": 0.8808
+        },
+        "abl_no_frozen": {
+          "runs": 20,
+          "affected_mean": 0.5,
+          "regenerated_mean": 0.5,
+          "f1": 1.0,
+          "stability": 0.9404
+        },
+        "abl_no_gate": {
+          "runs": 20,
+          "affected_mean": 0.5,
+          "regenerated_mean": 0.5,
+          "f1": 1.0,
+          "stability": 0.9404
+        }
+      },
+      "outbound_cancellation": {
+        "ours": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 1.0
+        },
+        "b1_full": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 15.2,
+          "f1": 0.2383,
+          "stability": 0.2753
+        },
+        "b2_naive": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 9.6,
+          "f1": 0.3495,
+          "stability": 0.2753
+        },
+        "abl_no_contracts": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 9.6,
+          "f1": 0.3495,
+          "stability": 0.9352
+        },
+        "abl_no_frozen": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 3.8,
+          "f1": 0.7,
+          "stability": 0.7839
+        },
+        "abl_no_gate": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 1.0
+        }
+      },
+      "return_cancellation": {
+        "ours": {
+          "runs": 10,
+          "affected_mean": 3.0,
+          "regenerated_mean": 3.0,
+          "f1": 1.0,
+          "stability": 0.8808
+        },
+        "b1_full": {
+          "runs": 10,
+          "affected_mean": 3.0,
+          "regenerated_mean": 15.2,
+          "f1": 0.337,
+          "stability": 0.2745
+        },
+        "b2_naive": {
+          "runs": 10,
+          "affected_mean": 3.0,
+          "regenerated_mean": 3.0,
+          "f1": 1.0,
+          "stability": 0.8808
+        },
+        "abl_no_contracts": {
+          "runs": 10,
+          "affected_mean": 3.0,
+          "regenerated_mean": 3.0,
+          "f1": 1.0,
+          "stability": 0.8808
+        },
+        "abl_no_frozen": {
+          "runs": 10,
+          "affected_mean": 3.0,
+          "regenerated_mean": 3.0,
+          "f1": 1.0,
+          "stability": 0.8808
+        },
+        "abl_no_gate": {
+          "runs": 10,
+          "affected_mean": 3.0,
+          "regenerated_mean": 3.0,
+          "f1": 1.0,
+          "stability": 0.8808
+        }
+      },
+      "hotel_overbooked": {
+        "ours": {
+          "runs": 10,
+          "affected_mean": 8.6,
+          "regenerated_mean": 8.6,
+          "f1": 1.0,
+          "stability": 0.7617
+        },
+        "b1_full": {
+          "runs": 10,
+          "affected_mean": 8.6,
+          "regenerated_mean": 15.2,
+          "f1": 0.7243,
+          "stability": 0.2147
+        },
+        "b2_naive": {
+          "runs": 10,
+          "affected_mean": 8.6,
+          "regenerated_mean": 8.6,
+          "f1": 1.0,
+          "stability": 0.2383
+        },
+        "abl_no_contracts": {
+          "runs": 10,
+          "affected_mean": 8.6,
+          "regenerated_mean": 8.6,
+          "f1": 1.0,
+          "stability": 0.7617
+        },
+        "abl_no_frozen": {
+          "runs": 10,
+          "affected_mean": 8.6,
+          "regenerated_mean": 8.6,
+          "f1": 1.0,
+          "stability": 0.2383
+        },
+        "abl_no_gate": {
+          "runs": 10,
+          "affected_mean": 8.6,
+          "regenerated_mean": 8.6,
+          "f1": 1.0,
+          "stability": 0.7617
+        }
+      },
+      "storm_mid_stay": {
+        "ours": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 0.8938
+        },
+        "b1_full": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 14.2,
+          "f1": 0.2539,
+          "stability": 0.2952
+        },
+        "b2_naive": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 0.8938
+        },
+        "abl_no_contracts": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 0.8938
+        },
+        "abl_no_frozen": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 0.8938
+        },
+        "abl_no_gate": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 0.8938
+        }
+      },
+      "storm_last_day": {
+        "ours": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 0.8938
+        },
+        "b1_full": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 14.2,
+          "f1": 0.2539,
+          "stability": 0.3241
+        },
+        "b2_naive": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 3.0,
+          "f1": 0.8,
+          "stability": 0.8938
+        },
+        "abl_no_contracts": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 3.0,
+          "f1": 0.8,
+          "stability": 0.8938
+        },
+        "abl_no_frozen": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 0.8938
+        },
+        "abl_no_gate": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 0.8938
+        }
+      },
+      "hotel_price_spike": {
+        "ours": {
+          "runs": 20,
+          "affected_mean": 1.0,
+          "regenerated_mean": 1.0,
+          "f1": 1.0,
+          "stability": 1.0
+        },
+        "b1_full": {
+          "runs": 20,
+          "affected_mean": 1.0,
+          "regenerated_mean": 14.2,
+          "f1": 0.1358,
+          "stability": 0.542
+        },
+        "b2_naive": {
+          "runs": 20,
+          "affected_mean": 1.0,
+          "regenerated_mean": 7.6,
+          "f1": 0.2383,
+          "stability": 0.5895
+        },
+        "abl_no_contracts": {
+          "runs": 20,
+          "affected_mean": 1.0,
+          "regenerated_mean": 7.6,
+          "f1": 0.2383,
+          "stability": 1.0
+        },
+        "abl_no_frozen": {
+          "runs": 20,
+          "affected_mean": 1.0,
+          "regenerated_mean": 1.0,
+          "f1": 1.0,
+          "stability": 1.0
+        },
+        "abl_no_gate": {
+          "runs": 20,
+          "affected_mean": 1.0,
+          "regenerated_mean": 1.0,
+          "f1": 1.0,
+          "stability": 1.0
+        }
+      },
+      "return_fare_spike": {
+        "ours": {
+          "runs": 10,
+          "affected_mean": 1.0,
+          "regenerated_mean": 1.0,
+          "f1": 1.0,
+          "stability": 1.0
+        },
+        "b1_full": {
+          "runs": 10,
+          "affected_mean": 1.0,
+          "regenerated_mean": 14.2,
+          "f1": 0.1358,
+          "stability": 0.4075
+        },
+        "b2_naive": {
+          "runs": 10,
+          "affected_mean": 1.0,
+          "regenerated_mean": 2.0,
+          "f1": 0.6667,
+          "stability": 1.0
+        },
+        "abl_no_contracts": {
+          "runs": 10,
+          "affected_mean": 1.0,
+          "regenerated_mean": 2.0,
+          "f1": 0.6667,
+          "stability": 1.0
+        },
+        "abl_no_frozen": {
+          "runs": 10,
+          "affected_mean": 1.0,
+          "regenerated_mean": 1.0,
+          "f1": 1.0,
+          "stability": 1.0
+        },
+        "abl_no_gate": {
+          "runs": 10,
+          "affected_mean": 1.0,
+          "regenerated_mean": 1.0,
+          "f1": 1.0,
+          "stability": 1.0
+        }
+      }
+    },
+    "off": {
+      "outbound_delay": {
+        "ours": {
+          "runs": 60,
+          "affected_mean": 2.3667,
+          "regenerated_mean": 2.3667,
+          "f1": 1.0,
+          "stability": 0.8196
+        },
+        "b1_full": {
+          "runs": 60,
+          "affected_mean": 2.3667,
+          "regenerated_mean": 14.2,
+          "f1": 0.2794,
+          "stability": 0.7962
+        },
+        "b2_naive": {
+          "runs": 60,
+          "affected_mean": 2.3667,
+          "regenerated_mean": 8.6,
+          "f1": 0.4092,
+          "stability": 0.7962
+        },
+        "abl_no_contracts": {
+          "runs": 60,
+          "affected_mean": 2.3667,
+          "regenerated_mean": 8.6,
+          "f1": 0.4092,
+          "stability": 0.7962
+        },
+        "abl_no_frozen": {
+          "runs": 60,
+          "affected_mean": 2.3667,
+          "regenerated_mean": 2.3667,
+          "f1": 1.0,
+          "stability": 0.8196
+        },
+        "abl_no_gate": {
+          "runs": 60,
+          "affected_mean": 2.3667,
+          "regenerated_mean": 2.3667,
+          "f1": 1.0,
+          "stability": 0.8196
+        }
+      },
+      "return_delay": {
+        "ours": {
+          "runs": 20,
+          "affected_mean": 0.5,
+          "regenerated_mean": 0.5,
+          "f1": 1.0,
+          "stability": 0.9404
+        },
+        "b1_full": {
+          "runs": 20,
+          "affected_mean": 0.5,
+          "regenerated_mean": 14.2,
+          "f1": 0.0679,
+          "stability": 0.8808
+        },
+        "b2_naive": {
+          "runs": 20,
+          "affected_mean": 0.5,
+          "regenerated_mean": 2.0,
+          "f1": 0.3333,
+          "stability": 0.8808
+        },
+        "abl_no_contracts": {
+          "runs": 20,
+          "affected_mean": 0.5,
+          "regenerated_mean": 2.0,
+          "f1": 0.3333,
+          "stability": 0.8808
+        },
+        "abl_no_frozen": {
+          "runs": 20,
+          "affected_mean": 0.5,
+          "regenerated_mean": 0.5,
+          "f1": 1.0,
+          "stability": 0.9404
+        },
+        "abl_no_gate": {
+          "runs": 20,
+          "affected_mean": 0.5,
+          "regenerated_mean": 0.5,
+          "f1": 1.0,
+          "stability": 0.9404
+        }
+      },
+      "outbound_cancellation": {
+        "ours": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 1.0
+        },
+        "b1_full": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 15.2,
+          "f1": 0.2383,
+          "stability": 0.7617
+        },
+        "b2_naive": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 9.6,
+          "f1": 0.3495,
+          "stability": 0.7617
+        },
+        "abl_no_contracts": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 9.6,
+          "f1": 0.3495,
+          "stability": 1.0
+        },
+        "abl_no_frozen": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 4.0,
+          "f1": 0.6667,
+          "stability": 0.7617
+        },
+        "abl_no_gate": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 1.0
+        }
+      },
+      "return_cancellation": {
+        "ours": {
+          "runs": 10,
+          "affected_mean": 3.0,
+          "regenerated_mean": 3.0,
+          "f1": 1.0,
+          "stability": 0.8808
+        },
+        "b1_full": {
+          "runs": 10,
+          "affected_mean": 3.0,
+          "regenerated_mean": 15.2,
+          "f1": 0.337,
+          "stability": 0.8808
+        },
+        "b2_naive": {
+          "runs": 10,
+          "affected_mean": 3.0,
+          "regenerated_mean": 3.0,
+          "f1": 1.0,
+          "stability": 0.8808
+        },
+        "abl_no_contracts": {
+          "runs": 10,
+          "affected_mean": 3.0,
+          "regenerated_mean": 3.0,
+          "f1": 1.0,
+          "stability": 0.8808
+        },
+        "abl_no_frozen": {
+          "runs": 10,
+          "affected_mean": 3.0,
+          "regenerated_mean": 3.0,
+          "f1": 1.0,
+          "stability": 0.8808
+        },
+        "abl_no_gate": {
+          "runs": 10,
+          "affected_mean": 3.0,
+          "regenerated_mean": 3.0,
+          "f1": 1.0,
+          "stability": 0.8808
+        }
+      },
+      "hotel_overbooked": {
+        "ours": {
+          "runs": 10,
+          "affected_mean": 8.6,
+          "regenerated_mean": 8.6,
+          "f1": 1.0,
+          "stability": 0.7617
+        },
+        "b1_full": {
+          "runs": 10,
+          "affected_mean": 8.6,
+          "regenerated_mean": 15.2,
+          "f1": 0.7243,
+          "stability": 0.7617
+        },
+        "b2_naive": {
+          "runs": 10,
+          "affected_mean": 8.6,
+          "regenerated_mean": 8.6,
+          "f1": 1.0,
+          "stability": 0.7617
+        },
+        "abl_no_contracts": {
+          "runs": 10,
+          "affected_mean": 8.6,
+          "regenerated_mean": 8.6,
+          "f1": 1.0,
+          "stability": 0.7617
+        },
+        "abl_no_frozen": {
+          "runs": 10,
+          "affected_mean": 8.6,
+          "regenerated_mean": 8.6,
+          "f1": 1.0,
+          "stability": 0.7617
+        },
+        "abl_no_gate": {
+          "runs": 10,
+          "affected_mean": 8.6,
+          "regenerated_mean": 8.6,
+          "f1": 1.0,
+          "stability": 0.7617
+        }
+      },
+      "storm_mid_stay": {
+        "ours": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 0.8938
+        },
+        "b1_full": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 14.2,
+          "f1": 0.2539,
+          "stability": 0.8938
+        },
+        "b2_naive": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 0.8938
+        },
+        "abl_no_contracts": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 0.8938
+        },
+        "abl_no_frozen": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 0.8938
+        },
+        "abl_no_gate": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 0.8938
+        }
+      },
+      "storm_last_day": {
+        "ours": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 0.8938
+        },
+        "b1_full": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 14.2,
+          "f1": 0.2539,
+          "stability": 0.8938
+        },
+        "b2_naive": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 3.0,
+          "f1": 0.8,
+          "stability": 0.8938
+        },
+        "abl_no_contracts": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 3.0,
+          "f1": 0.8,
+          "stability": 0.8938
+        },
+        "abl_no_frozen": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 0.8938
+        },
+        "abl_no_gate": {
+          "runs": 10,
+          "affected_mean": 2.0,
+          "regenerated_mean": 2.0,
+          "f1": 1.0,
+          "stability": 0.8938
+        }
+      },
+      "hotel_price_spike": {
+        "ours": {
+          "runs": 20,
+          "affected_mean": 1.0,
+          "regenerated_mean": 1.0,
+          "f1": 1.0,
+          "stability": 1.0
+        },
+        "b1_full": {
+          "runs": 20,
+          "affected_mean": 1.0,
+          "regenerated_mean": 14.2,
+          "f1": 0.1358,
+          "stability": 1.0
+        },
+        "b2_naive": {
+          "runs": 20,
+          "affected_mean": 1.0,
+          "regenerated_mean": 7.6,
+          "f1": 0.2383,
+          "stability": 1.0
+        },
+        "abl_no_contracts": {
+          "runs": 20,
+          "affected_mean": 1.0,
+          "regenerated_mean": 7.6,
+          "f1": 0.2383,
+          "stability": 1.0
+        },
+        "abl_no_frozen": {
+          "runs": 20,
+          "affected_mean": 1.0,
+          "regenerated_mean": 1.0,
+          "f1": 1.0,
+          "stability": 1.0
+        },
+        "abl_no_gate": {
+          "runs": 20,
+          "affected_mean": 1.0,
+          "regenerated_mean": 1.0,
+          "f1": 1.0,
+          "stability": 1.0
+        }
+      },
+      "return_fare_spike": {
+        "ours": {
+          "runs": 10,
+          "affected_mean": 1.0,
+          "regenerated_mean": 1.0,
+          "f1": 1.0,
+          "stability": 1.0
+        },
+        "b1_full": {
+          "runs": 10,
+          "affected_mean": 1.0,
+          "regenerated_mean": 14.2,
+          "f1": 0.1358,
+          "stability": 1.0
+        },
+        "b2_naive": {
+          "runs": 10,
+          "affected_mean": 1.0,
+          "regenerated_mean": 2.0,
+          "f1": 0.6667,
+          "stability": 1.0
+        },
+        "abl_no_contracts": {
+          "runs": 10,
+          "affected_mean": 1.0,
+          "regenerated_mean": 2.0,
+          "f1": 0.6667,
+          "stability": 1.0
+        },
+        "abl_no_frozen": {
+          "runs": 10,
+          "affected_mean": 1.0,
+          "regenerated_mean": 1.0,
+          "f1": 1.0,
+          "stability": 1.0
+        },
+        "abl_no_gate": {
+          "runs": 10,
+          "affected_mean": 1.0,
+          "regenerated_mean": 1.0,
+          "f1": 1.0,
+          "stability": 1.0
+        }
+      }
+    }
+  }
+}

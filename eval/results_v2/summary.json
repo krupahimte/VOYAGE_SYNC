@@ -1,0 +1,2521 @@
+{
+  "meta": {
+    "scenarios": 160,
+    "trips": 10,
+    "strategies": [
+      "ours",
+      "b1_full",
+      "b2_naive",
+      "abl_no_contracts",
+      "abl_no_frozen",
+      "abl_no_gate"
+    ],
+    "drift": {
+      "price_pct": 0.08,
+      "drop_pct": 0.15
+    },
+    "drift_modes": [
+      "on",
+      "off"
+    ],
+    "runtime_s": 11.0,
+    "oracle_validation": {
+      "labelled": 71,
+      "agree": 71,
+      "mismatches": []
+    },
+    "mode": "mock",
+    "llm_providers": [
+      "mock"
+    ],
+    "oracle_mock_llm_calls_total": 35,
+    "metric_llm_calls_total": 0,
+    "real_llm_calls": 0
+  },
+  "aggregate_v2": {
+    "on": {
+      "ours": {
+        "label": "Ours",
+        "runs": 160,
+        "plan_valid": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "execution_ready": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "e1_completion": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e2_output_valid": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e3_dependencies_evaluable": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e4_contracts_hold": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "task_plan_valid_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "task_ready_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "runs_with_awaiting_approval": 0,
+        "contract_satisfaction": {
+          "value": 0.9975,
+          "n": 160,
+          "na": 0
+        },
+        "req_satisfaction": {
+          "value": 0.8891,
+          "n": 160,
+          "na": 0
+        },
+        "req_baseline_satisfaction": {
+          "value": 0.9,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget": {
+          "value": 0.5563,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget_before": {
+          "value": 0.6,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_regression_rate": {
+          "value": 0.05,
+          "n": 160,
+          "na": 0
+        },
+        "req_regressions_by_requirement": {
+          "dates": 0,
+          "party_size": 0,
+          "budget": 8,
+          "interests": 0
+        },
+        "resource_mock_llm_calls": {
+          "value": 0.2188,
+          "n": 160,
+          "na": 0
+        },
+        "resource_api_calls": {
+          "value": 1.6438,
+          "n": 160,
+          "na": 0
+        },
+        "metric_llm_calls_total": 0,
+        "travel_cost_change_of_budget": {
+          "value": 0.0307,
+          "n": 160,
+          "na": 0
+        },
+        "within_budget_after": {
+          "value": 0.5563,
+          "n": 160,
+          "na": 0
+        },
+        "activity_time_retention": {
+          "value": 0.5857,
+          "n": 71,
+          "na": 89
+        },
+        "latency_median_s": 0.00091,
+        "latency_p95_s": 0.00315,
+        "tpr": {
+          "value": 0.9995,
+          "n": 160,
+          "na": 0
+        },
+        "tpr_visible": {
+          "value": 0.9991,
+          "n": 160,
+          "na": 0
+        },
+        "replanning_scope": {
+          "value": 0.1528,
+          "n": 160,
+          "na": 0
+        },
+        "contract_recovery": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "strict_recovery": {
+          "value": 0.8875,
+          "n": 160,
+          "na": 0
+        },
+        "precision": {
+          "value": 0.9963,
+          "n": 160,
+          "na": 0
+        },
+        "recall": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "f1": {
+          "value": 0.9973,
+          "n": 160,
+          "na": 0
+        },
+        "legacy_stability": {
+          "value": 0.888,
+          "n": 160,
+          "na": 0
+        }
+      },
+      "b1_full": {
+        "label": "B1 full replan",
+        "runs": 160,
+        "plan_valid": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "execution_ready": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "e1_completion": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e2_output_valid": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e3_dependencies_evaluable": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e4_contracts_hold": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "task_plan_valid_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "task_ready_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "runs_with_awaiting_approval": 0,
+        "contract_satisfaction": {
+          "value": 0.9975,
+          "n": 160,
+          "na": 0
+        },
+        "req_satisfaction": {
+          "value": 0.8938,
+          "n": 160,
+          "na": 0
+        },
+        "req_baseline_satisfaction": {
+          "value": 0.9,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget": {
+          "value": 0.575,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget_before": {
+          "value": 0.6,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_regression_rate": {
+          "value": 0.05,
+          "n": 160,
+          "na": 0
+        },
+        "req_regressions_by_requirement": {
+          "dates": 0,
+          "party_size": 0,
+          "budget": 8,
+          "interests": 0
+        },
+        "resource_mock_llm_calls": {
+          "value": 4.4938,
+          "n": 160,
+          "na": 0
+        },
+        "resource_api_calls": {
+          "value": 14.2625,
+          "n": 160,
+          "na": 0
+        },
+        "metric_llm_calls_total": 0,
+        "travel_cost_change_of_budget": {
+          "value": 0.0302,
+          "n": 160,
+          "na": 0
+        },
+        "within_budget_after": {
+          "value": 0.575,
+          "n": 160,
+          "na": 0
+        },
+        "activity_time_retention": {
+          "value": 0.585,
+          "n": 71,
+          "na": 89
+        },
+        "latency_median_s": 0.00717,
+        "latency_p95_s": 0.01439,
+        "tpr": {
+          "value": 0.5987,
+          "n": 160,
+          "na": 0
+        },
+        "tpr_visible": {
+          "value": 0.3814,
+          "n": 160,
+          "na": 0
+        },
+        "replanning_scope": {
+          "value": 0.9448,
+          "n": 160,
+          "na": 0
+        },
+        "contract_recovery": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "strict_recovery": {
+          "value": 0.8875,
+          "n": 160,
+          "na": 0
+        },
+        "precision": {
+          "value": 0.1578,
+          "n": 160,
+          "na": 0
+        },
+        "recall": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "f1": {
+          "value": 0.2517,
+          "n": 160,
+          "na": 0
+        },
+        "legacy_stability": {
+          "value": 0.3103,
+          "n": 160,
+          "na": 0
+        }
+      },
+      "b2_naive": {
+        "label": "B2 naive downstream",
+        "runs": 160,
+        "plan_valid": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "execution_ready": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "e1_completion": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e2_output_valid": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e3_dependencies_evaluable": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e4_contracts_hold": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "task_plan_valid_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "task_ready_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "runs_with_awaiting_approval": 0,
+        "contract_satisfaction": {
+          "value": 0.9975,
+          "n": 160,
+          "na": 0
+        },
+        "req_satisfaction": {
+          "value": 0.8969,
+          "n": 160,
+          "na": 0
+        },
+        "req_baseline_satisfaction": {
+          "value": 0.9,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget": {
+          "value": 0.5875,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget_before": {
+          "value": 0.6,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_regression_rate": {
+          "value": 0.0437,
+          "n": 160,
+          "na": 0
+        },
+        "req_regressions_by_requirement": {
+          "dates": 0,
+          "party_size": 0,
+          "budget": 7,
+          "interests": 0
+        },
+        "resource_mock_llm_calls": {
+          "value": 2.8937,
+          "n": 160,
+          "na": 0
+        },
+        "resource_api_calls": {
+          "value": 5.6875,
+          "n": 160,
+          "na": 0
+        },
+        "metric_llm_calls_total": 0,
+        "travel_cost_change_of_budget": {
+          "value": 0.0246,
+          "n": 160,
+          "na": 0
+        },
+        "within_budget_after": {
+          "value": 0.5875,
+          "n": 160,
+          "na": 0
+        },
+        "activity_time_retention": {
+          "value": 0.5857,
+          "n": 71,
+          "na": 89
+        },
+        "latency_median_s": 0.00288,
+        "latency_p95_s": 0.00759,
+        "tpr": {
+          "value": 0.7805,
+          "n": 160,
+          "na": 0
+        },
+        "tpr_visible": {
+          "value": 0.6518,
+          "n": 160,
+          "na": 0
+        },
+        "replanning_scope": {
+          "value": 0.4101,
+          "n": 160,
+          "na": 0
+        },
+        "contract_recovery": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "strict_recovery": {
+          "value": 0.8938,
+          "n": 160,
+          "na": 0
+        },
+        "precision": {
+          "value": 0.4274,
+          "n": 160,
+          "na": 0
+        },
+        "recall": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "f1": {
+          "value": 0.5259,
+          "n": 160,
+          "na": 0
+        },
+        "legacy_stability": {
+          "value": 0.5536,
+          "n": 160,
+          "na": 0
+        }
+      },
+      "abl_no_contracts": {
+        "label": "Ablation: no contracts",
+        "runs": 160,
+        "plan_valid": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "execution_ready": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "e1_completion": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e2_output_valid": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e3_dependencies_evaluable": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e4_contracts_hold": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "task_plan_valid_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "task_ready_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "runs_with_awaiting_approval": 0,
+        "contract_satisfaction": {
+          "value": 0.9975,
+          "n": 160,
+          "na": 0
+        },
+        "req_satisfaction": {
+          "value": 0.8938,
+          "n": 160,
+          "na": 0
+        },
+        "req_baseline_satisfaction": {
+          "value": 0.9,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget": {
+          "value": 0.575,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget_before": {
+          "value": 0.6,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_regression_rate": {
+          "value": 0.05,
+          "n": 160,
+          "na": 0
+        },
+        "req_regressions_by_requirement": {
+          "dates": 0,
+          "party_size": 0,
+          "budget": 8,
+          "interests": 0
+        },
+        "resource_mock_llm_calls": {
+          "value": 0.225,
+          "n": 160,
+          "na": 0
+        },
+        "resource_api_calls": {
+          "value": 5.6875,
+          "n": 160,
+          "na": 0
+        },
+        "metric_llm_calls_total": 0,
+        "travel_cost_change_of_budget": {
+          "value": 0.0314,
+          "n": 160,
+          "na": 0
+        },
+        "within_budget_after": {
+          "value": 0.575,
+          "n": 160,
+          "na": 0
+        },
+        "activity_time_retention": {
+          "value": 0.5857,
+          "n": 71,
+          "na": 89
+        },
+        "latency_median_s": 0.002465,
+        "latency_p95_s": 0.00611,
+        "tpr": {
+          "value": 0.9703,
+          "n": 160,
+          "na": 0
+        },
+        "tpr_visible": {
+          "value": 0.9657,
+          "n": 160,
+          "na": 0
+        },
+        "replanning_scope": {
+          "value": 0.4101,
+          "n": 160,
+          "na": 0
+        },
+        "contract_recovery": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "strict_recovery": {
+          "value": 0.8875,
+          "n": 160,
+          "na": 0
+        },
+        "precision": {
+          "value": 0.4274,
+          "n": 160,
+          "na": 0
+        },
+        "recall": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "f1": {
+          "value": 0.5259,
+          "n": 160,
+          "na": 0
+        },
+        "legacy_stability": {
+          "value": 0.8569,
+          "n": 160,
+          "na": 0
+        }
+      },
+      "abl_no_frozen": {
+        "label": "Ablation: no frozen context",
+        "runs": 160,
+        "plan_valid": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "execution_ready": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "e1_completion": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e2_output_valid": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e3_dependencies_evaluable": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e4_contracts_hold": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "task_plan_valid_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "task_ready_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "runs_with_awaiting_approval": 0,
+        "contract_satisfaction": {
+          "value": 0.9975,
+          "n": 160,
+          "na": 0
+        },
+        "req_satisfaction": {
+          "value": 0.8891,
+          "n": 160,
+          "na": 0
+        },
+        "req_baseline_satisfaction": {
+          "value": 0.9,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget": {
+          "value": 0.5563,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget_before": {
+          "value": 0.6,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_regression_rate": {
+          "value": 0.0437,
+          "n": 160,
+          "na": 0
+        },
+        "req_regressions_by_requirement": {
+          "dates": 0,
+          "party_size": 0,
+          "budget": 7,
+          "interests": 0
+        },
+        "resource_mock_llm_calls": {
+          "value": 0.7312,
+          "n": 160,
+          "na": 0
+        },
+        "resource_api_calls": {
+          "value": 1.8562,
+          "n": 160,
+          "na": 0
+        },
+        "metric_llm_calls_total": 0,
+        "travel_cost_change_of_budget": {
+          "value": 0.0251,
+          "n": 160,
+          "na": 0
+        },
+        "within_budget_after": {
+          "value": 0.5563,
+          "n": 160,
+          "na": 0
+        },
+        "activity_time_retention": {
+          "value": 0.5857,
+          "n": 71,
+          "na": 89
+        },
+        "latency_median_s": 0.00098,
+        "latency_p95_s": 0.00384,
+        "tpr": {
+          "value": 0.9796,
+          "n": 160,
+          "na": 0
+        },
+        "tpr_visible": {
+          "value": 0.9655,
+          "n": 160,
+          "na": 0
+        },
+        "replanning_scope": {
+          "value": 0.1665,
+          "n": 160,
+          "na": 0
+        },
+        "contract_recovery": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "strict_recovery": {
+          "value": 0.8938,
+          "n": 160,
+          "na": 0
+        },
+        "precision": {
+          "value": 0.9576,
+          "n": 160,
+          "na": 0
+        },
+        "recall": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "f1": {
+          "value": 0.9712,
+          "n": 160,
+          "na": 0
+        },
+        "legacy_stability": {
+          "value": 0.8261,
+          "n": 160,
+          "na": 0
+        }
+      },
+      "abl_no_gate": {
+        "label": "Ablation: no Risk Gate",
+        "runs": 160,
+        "plan_valid": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "execution_ready": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "e1_completion": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e2_output_valid": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e3_dependencies_evaluable": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e4_contracts_hold": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "task_plan_valid_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "task_ready_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "runs_with_awaiting_approval": 0,
+        "contract_satisfaction": {
+          "value": 0.9975,
+          "n": 160,
+          "na": 0
+        },
+        "req_satisfaction": {
+          "value": 0.8891,
+          "n": 160,
+          "na": 0
+        },
+        "req_baseline_satisfaction": {
+          "value": 0.9,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget": {
+          "value": 0.5563,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget_before": {
+          "value": 0.6,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_regression_rate": {
+          "value": 0.05,
+          "n": 160,
+          "na": 0
+        },
+        "req_regressions_by_requirement": {
+          "dates": 0,
+          "party_size": 0,
+          "budget": 8,
+          "interests": 0
+        },
+        "resource_mock_llm_calls": {
+          "value": 0.2188,
+          "n": 160,
+          "na": 0
+        },
+        "resource_api_calls": {
+          "value": 1.6438,
+          "n": 160,
+          "na": 0
+        },
+        "metric_llm_calls_total": 0,
+        "travel_cost_change_of_budget": {
+          "value": 0.0307,
+          "n": 160,
+          "na": 0
+        },
+        "within_budget_after": {
+          "value": 0.5563,
+          "n": 160,
+          "na": 0
+        },
+        "activity_time_retention": {
+          "value": 0.5857,
+          "n": 71,
+          "na": 89
+        },
+        "latency_median_s": 0.00094,
+        "latency_p95_s": 0.00296,
+        "tpr": {
+          "value": 0.9995,
+          "n": 160,
+          "na": 0
+        },
+        "tpr_visible": {
+          "value": 0.9991,
+          "n": 160,
+          "na": 0
+        },
+        "replanning_scope": {
+          "value": 0.1528,
+          "n": 160,
+          "na": 0
+        },
+        "contract_recovery": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "strict_recovery": {
+          "value": 0.8875,
+          "n": 160,
+          "na": 0
+        },
+        "precision": {
+          "value": 0.9963,
+          "n": 160,
+          "na": 0
+        },
+        "recall": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "f1": {
+          "value": 0.9973,
+          "n": 160,
+          "na": 0
+        },
+        "legacy_stability": {
+          "value": 0.888,
+          "n": 160,
+          "na": 0
+        }
+      }
+    },
+    "off": {
+      "ours": {
+        "label": "Ours",
+        "runs": 160,
+        "plan_valid": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "execution_ready": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "e1_completion": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e2_output_valid": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e3_dependencies_evaluable": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e4_contracts_hold": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "task_plan_valid_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "task_ready_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "runs_with_awaiting_approval": 0,
+        "contract_satisfaction": {
+          "value": 0.9975,
+          "n": 160,
+          "na": 0
+        },
+        "req_satisfaction": {
+          "value": 0.8875,
+          "n": 160,
+          "na": 0
+        },
+        "req_baseline_satisfaction": {
+          "value": 0.9,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget": {
+          "value": 0.55,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget_before": {
+          "value": 0.6,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_regression_rate": {
+          "value": 0.05,
+          "n": 160,
+          "na": 0
+        },
+        "req_regressions_by_requirement": {
+          "dates": 0,
+          "party_size": 0,
+          "budget": 8,
+          "interests": 0
+        },
+        "resource_mock_llm_calls": {
+          "value": 0.2188,
+          "n": 160,
+          "na": 0
+        },
+        "resource_api_calls": {
+          "value": 1.6062,
+          "n": 160,
+          "na": 0
+        },
+        "metric_llm_calls_total": 0,
+        "travel_cost_change_of_budget": {
+          "value": 0.0313,
+          "n": 160,
+          "na": 0
+        },
+        "within_budget_after": {
+          "value": 0.55,
+          "n": 160,
+          "na": 0
+        },
+        "activity_time_retention": {
+          "value": 0.5857,
+          "n": 71,
+          "na": 89
+        },
+        "latency_median_s": 0.00093,
+        "latency_p95_s": 0.0027,
+        "tpr": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "tpr_visible": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "replanning_scope": {
+          "value": 0.1508,
+          "n": 160,
+          "na": 0
+        },
+        "contract_recovery": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "strict_recovery": {
+          "value": 0.8875,
+          "n": 160,
+          "na": 0
+        },
+        "precision": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "recall": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "f1": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "legacy_stability": {
+          "value": 0.8893,
+          "n": 160,
+          "na": 0
+        }
+      },
+      "b1_full": {
+        "label": "B1 full replan",
+        "runs": 160,
+        "plan_valid": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "execution_ready": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "e1_completion": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e2_output_valid": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e3_dependencies_evaluable": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e4_contracts_hold": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "task_plan_valid_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "task_ready_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "runs_with_awaiting_approval": 0,
+        "contract_satisfaction": {
+          "value": 0.9975,
+          "n": 160,
+          "na": 0
+        },
+        "req_satisfaction": {
+          "value": 0.8875,
+          "n": 160,
+          "na": 0
+        },
+        "req_baseline_satisfaction": {
+          "value": 0.9,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget": {
+          "value": 0.55,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget_before": {
+          "value": 0.6,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_regression_rate": {
+          "value": 0.05,
+          "n": 160,
+          "na": 0
+        },
+        "req_regressions_by_requirement": {
+          "dates": 0,
+          "party_size": 0,
+          "budget": 8,
+          "interests": 0
+        },
+        "resource_mock_llm_calls": {
+          "value": 4.4938,
+          "n": 160,
+          "na": 0
+        },
+        "resource_api_calls": {
+          "value": 14.2625,
+          "n": 160,
+          "na": 0
+        },
+        "metric_llm_calls_total": 0,
+        "travel_cost_change_of_budget": {
+          "value": 0.0236,
+          "n": 160,
+          "na": 0
+        },
+        "within_budget_after": {
+          "value": 0.55,
+          "n": 160,
+          "na": 0
+        },
+        "activity_time_retention": {
+          "value": 0.5857,
+          "n": 71,
+          "na": 89
+        },
+        "latency_median_s": 0.00714,
+        "latency_p95_s": 0.01339,
+        "tpr": {
+          "value": 0.9793,
+          "n": 160,
+          "na": 0
+        },
+        "tpr_visible": {
+          "value": 0.9687,
+          "n": 160,
+          "na": 0
+        },
+        "replanning_scope": {
+          "value": 0.9448,
+          "n": 160,
+          "na": 0
+        },
+        "contract_recovery": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "strict_recovery": {
+          "value": 0.8875,
+          "n": 160,
+          "na": 0
+        },
+        "precision": {
+          "value": 0.1578,
+          "n": 160,
+          "na": 0
+        },
+        "recall": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "f1": {
+          "value": 0.2517,
+          "n": 160,
+          "na": 0
+        },
+        "legacy_stability": {
+          "value": 0.8582,
+          "n": 160,
+          "na": 0
+        }
+      },
+      "b2_naive": {
+        "label": "B2 naive downstream",
+        "runs": 160,
+        "plan_valid": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "execution_ready": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "e1_completion": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e2_output_valid": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e3_dependencies_evaluable": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e4_contracts_hold": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "task_plan_valid_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "task_ready_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "runs_with_awaiting_approval": 0,
+        "contract_satisfaction": {
+          "value": 0.9975,
+          "n": 160,
+          "na": 0
+        },
+        "req_satisfaction": {
+          "value": 0.8875,
+          "n": 160,
+          "na": 0
+        },
+        "req_baseline_satisfaction": {
+          "value": 0.9,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget": {
+          "value": 0.55,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget_before": {
+          "value": 0.6,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_regression_rate": {
+          "value": 0.05,
+          "n": 160,
+          "na": 0
+        },
+        "req_regressions_by_requirement": {
+          "dates": 0,
+          "party_size": 0,
+          "budget": 8,
+          "interests": 0
+        },
+        "resource_mock_llm_calls": {
+          "value": 2.8937,
+          "n": 160,
+          "na": 0
+        },
+        "resource_api_calls": {
+          "value": 5.6875,
+          "n": 160,
+          "na": 0
+        },
+        "metric_llm_calls_total": 0,
+        "travel_cost_change_of_budget": {
+          "value": 0.0236,
+          "n": 160,
+          "na": 0
+        },
+        "within_budget_after": {
+          "value": 0.55,
+          "n": 160,
+          "na": 0
+        },
+        "activity_time_retention": {
+          "value": 0.5857,
+          "n": 71,
+          "na": 89
+        },
+        "latency_median_s": 0.00249,
+        "latency_p95_s": 0.00673,
+        "tpr": {
+          "value": 0.9793,
+          "n": 160,
+          "na": 0
+        },
+        "tpr_visible": {
+          "value": 0.9687,
+          "n": 160,
+          "na": 0
+        },
+        "replanning_scope": {
+          "value": 0.4101,
+          "n": 160,
+          "na": 0
+        },
+        "contract_recovery": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "strict_recovery": {
+          "value": 0.8875,
+          "n": 160,
+          "na": 0
+        },
+        "precision": {
+          "value": 0.4274,
+          "n": 160,
+          "na": 0
+        },
+        "recall": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "f1": {
+          "value": 0.5259,
+          "n": 160,
+          "na": 0
+        },
+        "legacy_stability": {
+          "value": 0.8582,
+          "n": 160,
+          "na": 0
+        }
+      },
+      "abl_no_contracts": {
+        "label": "Ablation: no contracts",
+        "runs": 160,
+        "plan_valid": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "execution_ready": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "e1_completion": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e2_output_valid": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e3_dependencies_evaluable": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e4_contracts_hold": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "task_plan_valid_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "task_ready_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "runs_with_awaiting_approval": 0,
+        "contract_satisfaction": {
+          "value": 0.9975,
+          "n": 160,
+          "na": 0
+        },
+        "req_satisfaction": {
+          "value": 0.8875,
+          "n": 160,
+          "na": 0
+        },
+        "req_baseline_satisfaction": {
+          "value": 0.9,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget": {
+          "value": 0.55,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget_before": {
+          "value": 0.6,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_regression_rate": {
+          "value": 0.05,
+          "n": 160,
+          "na": 0
+        },
+        "req_regressions_by_requirement": {
+          "dates": 0,
+          "party_size": 0,
+          "budget": 8,
+          "interests": 0
+        },
+        "resource_mock_llm_calls": {
+          "value": 0.225,
+          "n": 160,
+          "na": 0
+        },
+        "resource_api_calls": {
+          "value": 5.6875,
+          "n": 160,
+          "na": 0
+        },
+        "metric_llm_calls_total": 0,
+        "travel_cost_change_of_budget": {
+          "value": 0.0312,
+          "n": 160,
+          "na": 0
+        },
+        "within_budget_after": {
+          "value": 0.55,
+          "n": 160,
+          "na": 0
+        },
+        "activity_time_retention": {
+          "value": 0.5857,
+          "n": 71,
+          "na": 89
+        },
+        "latency_median_s": 0.00214,
+        "latency_p95_s": 0.00555,
+        "tpr": {
+          "value": 0.9892,
+          "n": 160,
+          "na": 0
+        },
+        "tpr_visible": {
+          "value": 0.9836,
+          "n": 160,
+          "na": 0
+        },
+        "replanning_scope": {
+          "value": 0.4101,
+          "n": 160,
+          "na": 0
+        },
+        "contract_recovery": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "strict_recovery": {
+          "value": 0.8875,
+          "n": 160,
+          "na": 0
+        },
+        "precision": {
+          "value": 0.4274,
+          "n": 160,
+          "na": 0
+        },
+        "recall": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "f1": {
+          "value": 0.5259,
+          "n": 160,
+          "na": 0
+        },
+        "legacy_stability": {
+          "value": 0.8731,
+          "n": 160,
+          "na": 0
+        }
+      },
+      "abl_no_frozen": {
+        "label": "Ablation: no frozen context",
+        "runs": 160,
+        "plan_valid": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "execution_ready": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "e1_completion": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e2_output_valid": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e3_dependencies_evaluable": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e4_contracts_hold": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "task_plan_valid_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "task_ready_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "runs_with_awaiting_approval": 0,
+        "contract_satisfaction": {
+          "value": 0.9975,
+          "n": 160,
+          "na": 0
+        },
+        "req_satisfaction": {
+          "value": 0.8875,
+          "n": 160,
+          "na": 0
+        },
+        "req_baseline_satisfaction": {
+          "value": 0.9,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget": {
+          "value": 0.55,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget_before": {
+          "value": 0.6,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_regression_rate": {
+          "value": 0.05,
+          "n": 160,
+          "na": 0
+        },
+        "req_regressions_by_requirement": {
+          "dates": 0,
+          "party_size": 0,
+          "budget": 8,
+          "interests": 0
+        },
+        "resource_mock_llm_calls": {
+          "value": 0.625,
+          "n": 160,
+          "na": 0
+        },
+        "resource_api_calls": {
+          "value": 1.7312,
+          "n": 160,
+          "na": 0
+        },
+        "metric_llm_calls_total": 0,
+        "travel_cost_change_of_budget": {
+          "value": 0.0237,
+          "n": 160,
+          "na": 0
+        },
+        "within_budget_after": {
+          "value": 0.55,
+          "n": 160,
+          "na": 0
+        },
+        "activity_time_retention": {
+          "value": 0.5857,
+          "n": 71,
+          "na": 89
+        },
+        "latency_median_s": 0.001005,
+        "latency_p95_s": 0.00289,
+        "tpr": {
+          "value": 0.9901,
+          "n": 160,
+          "na": 0
+        },
+        "tpr_visible": {
+          "value": 0.9851,
+          "n": 160,
+          "na": 0
+        },
+        "replanning_scope": {
+          "value": 0.1593,
+          "n": 160,
+          "na": 0
+        },
+        "contract_recovery": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "strict_recovery": {
+          "value": 0.8875,
+          "n": 160,
+          "na": 0
+        },
+        "precision": {
+          "value": 0.9688,
+          "n": 160,
+          "na": 0
+        },
+        "recall": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "f1": {
+          "value": 0.9792,
+          "n": 160,
+          "na": 0
+        },
+        "legacy_stability": {
+          "value": 0.8744,
+          "n": 160,
+          "na": 0
+        }
+      },
+      "abl_no_gate": {
+        "label": "Ablation: no Risk Gate",
+        "runs": 160,
+        "plan_valid": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "execution_ready": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "e1_completion": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e2_output_valid": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e3_dependencies_evaluable": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "e4_contracts_hold": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "task_plan_valid_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "task_ready_rate": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "runs_with_awaiting_approval": 0,
+        "contract_satisfaction": {
+          "value": 0.9975,
+          "n": 160,
+          "na": 0
+        },
+        "req_satisfaction": {
+          "value": 0.8875,
+          "n": 160,
+          "na": 0
+        },
+        "req_baseline_satisfaction": {
+          "value": 0.9,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget": {
+          "value": 0.55,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_dates_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_party_size_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_budget_before": {
+          "value": 0.6,
+          "n": 160,
+          "na": 0
+        },
+        "req_interests_before": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "req_regression_rate": {
+          "value": 0.05,
+          "n": 160,
+          "na": 0
+        },
+        "req_regressions_by_requirement": {
+          "dates": 0,
+          "party_size": 0,
+          "budget": 8,
+          "interests": 0
+        },
+        "resource_mock_llm_calls": {
+          "value": 0.2188,
+          "n": 160,
+          "na": 0
+        },
+        "resource_api_calls": {
+          "value": 1.6062,
+          "n": 160,
+          "na": 0
+        },
+        "metric_llm_calls_total": 0,
+        "travel_cost_change_of_budget": {
+          "value": 0.0313,
+          "n": 160,
+          "na": 0
+        },
+        "within_budget_after": {
+          "value": 0.55,
+          "n": 160,
+          "na": 0
+        },
+        "activity_time_retention": {
+          "value": 0.5857,
+          "n": 71,
+          "na": 89
+        },
+        "latency_median_s": 0.000945,
+        "latency_p95_s": 0.00333,
+        "tpr": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "tpr_visible": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "replanning_scope": {
+          "value": 0.1508,
+          "n": 160,
+          "na": 0
+        },
+        "contract_recovery": {
+          "value": 0.9375,
+          "n": 160,
+          "na": 0
+        },
+        "strict_recovery": {
+          "value": 0.8875,
+          "n": 160,
+          "na": 0
+        },
+        "precision": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "recall": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "f1": {
+          "value": 1.0,
+          "n": 160,
+          "na": 0
+        },
+        "legacy_stability": {
+          "value": 0.8893,
+          "n": 160,
+          "na": 0
+        }
+      }
+    }
+  },
+  "parity": {
+    "within_run": {
+      "on": {
+        "scenarios": 160,
+        "event_or_oracle_mismatches": [],
+        "missing_strategy_runs": []
+      },
+      "off": {
+        "scenarios": 160,
+        "event_or_oracle_mismatches": [],
+        "missing_strategy_runs": []
+      }
+    },
+    "legacy": {
+      "on": {
+        "file": "C:\\Users\\admin1\\Desktop\\voyageesync\\eval\\results\\results.csv",
+        "available": true,
+        "legacy_rows": 960,
+        "compared": 960,
+        "missing_in_legacy": 0,
+        "not_rerun": 0,
+        "mismatch_count": 0,
+        "mismatches": [],
+        "ignored_fields": [
+          "latency_ms"
+        ]
+      },
+      "off": {
+        "file": "C:\\Users\\admin1\\Desktop\\voyageesync\\eval\\results\\results_no_drift.csv",
+        "available": true,
+        "legacy_rows": 960,
+        "compared": 960,
+        "missing_in_legacy": 0,
+        "not_rerun": 0,
+        "mismatch_count": 0,
+        "mismatches": [],
+        "ignored_fields": [
+          "latency_ms"
+        ]
+      }
+    }
+  },
+  "details": {
+    "ours_unrecovered": [
+      "bali_couple_relax__outbound_delay_600",
+      "dubai_solo_shopping__outbound_delay_600",
+      "goa_couple_domestic__outbound_delay_600",
+      "jaipur_family_domestic__outbound_delay_600",
+      "kyoto_group_slow__outbound_delay_600",
+      "lisbon_solo_budget__outbound_delay_600",
+      "reykjavik_friends_adventure__outbound_delay_600",
+      "rome_couple_culture__outbound_delay_600",
+      "santorini_solo_luxury__outbound_delay_600",
+      "tokyo_family_week__outbound_delay_600"
+    ],
+    "ours_not_strict": [
+      "bali_couple_relax__outbound_delay_600",
+      "dubai_solo_shopping__outbound_delay_600",
+      "goa_couple_domestic__outbound_delay_600",
+      "jaipur_family_domestic__outbound_delay_600",
+      "kyoto_group_slow__outbound_delay_600",
+      "lisbon_solo_budget__outbound_delay_600",
+      "reykjavik_friends_adventure__outbound_delay_600",
+      "rome_couple_culture__hotel_price_spike_10",
+      "rome_couple_culture__hotel_price_spike_30",
+      "rome_couple_culture__outbound_cancellation",
+      "rome_couple_culture__outbound_delay_600",
+      "rome_couple_culture__return_cancellation",
+      "rome_couple_culture__return_fare_spike_60",
+      "rome_couple_culture__storm_last_day",
+      "rome_couple_culture__storm_mid_stay",
+      "santorini_solo_luxury__hotel_price_spike_30",
+      "santorini_solo_luxury__outbound_delay_600",
+      "tokyo_family_week__outbound_delay_600"
+    ],
+    "ours_not_strict_reasons": {
+      "plan not valid": 10,
+      "regression: budget": 8
+    },
+    "trips": 10,
+    "trips_over_budget_before": [
+      "bali_couple_relax",
+      "goa_couple_domestic",
+      "jaipur_family_domestic",
+      "lisbon_solo_budget"
+    ],
+    "ours_budget_worse": [
+      {
+        "scenario": "bali_couple_relax__outbound_delay_15",
+        "drift": "on",
+        "budget": 4500.0,
+        "before": 4647.5,
+        "ours": 4647.5,
+        "b2_naive": 4497.5,
+        "b1_full": 4565.33
+      },
+      {
+        "scenario": "bali_couple_relax__outbound_delay_180",
+        "drift": "on",
+        "budget": 4500.0,
+        "before": 4647.5,
+        "ours": 4587.5,
+        "b2_naive": 4458.02,
+        "b1_full": 4415.34
+      },
+      {
+        "scenario": "bali_couple_relax__outbound_delay_300",
+        "drift": "on",
+        "budget": 4500.0,
+        "before": 4647.5,
+        "ours": 4587.5,
+        "b2_naive": 4402.82,
+        "b1_full": 4387.16
+      },
+      {
+        "scenario": "bali_couple_relax__outbound_delay_480",
+        "drift": "on",
+        "budget": 4500.0,
+        "before": 4647.5,
+        "ours": 4527.5,
+        "b2_naive": 4312.46,
+        "b1_full": 4335.88
+      },
+      {
+        "scenario": "bali_couple_relax__outbound_delay_90",
+        "drift": "on",
+        "budget": 4500.0,
+        "before": 4647.5,
+        "ours": 4627.5,
+        "b2_naive": 4475.76,
+        "b1_full": 4489.0
+      },
+      {
+        "scenario": "rome_couple_culture__return_cancellation",
+        "drift": "on",
+        "budget": 3000.0,
+        "before": 2969.51,
+        "ours": 3229.65,
+        "b2_naive": 2981.86,
+        "b1_full": 2974.25
+      }
+    ],
+    "cost_change_by_kind": [
+      {
+        "kind": "hotel_overbooked",
+        "drift": "off",
+        "ours": 0.0014,
+        "b2_naive": -0.0121,
+        "b1_full": -0.0121
+      },
+      {
+        "kind": "hotel_overbooked",
+        "drift": "on",
+        "ours": -0.0018,
+        "b2_naive": -0.014,
+        "b1_full": -0.0271
+      },
+      {
+        "kind": "hotel_price_spike",
+        "drift": "off",
+        "ours": 0.0623,
+        "b2_naive": 0.0623,
+        "b1_full": 0.0623
+      },
+      {
+        "kind": "hotel_price_spike",
+        "drift": "on",
+        "ours": 0.0623,
+        "b2_naive": 0.0646,
+        "b1_full": 0.0787
+      },
+      {
+        "kind": "outbound_cancellation",
+        "drift": "off",
+        "ours": 0.1103,
+        "b2_naive": 0.043,
+        "b1_full": 0.043
+      },
+      {
+        "kind": "outbound_cancellation",
+        "drift": "on",
+        "ours": 0.1172,
+        "b2_naive": 0.0634,
+        "b1_full": 0.0684
+      },
+      {
+        "kind": "outbound_delay",
+        "drift": "off",
+        "ours": -0.0197,
+        "b2_naive": -0.0199,
+        "b1_full": -0.0199
+      },
+      {
+        "kind": "outbound_delay",
+        "drift": "on",
+        "ours": -0.0201,
+        "b2_naive": -0.0221,
+        "b1_full": -0.0121
+      },
+      {
+        "kind": "return_cancellation",
+        "drift": "off",
+        "ours": 0.0808,
+        "b2_naive": 0.0404,
+        "b1_full": 0.0404
+      },
+      {
+        "kind": "return_cancellation",
+        "drift": "on",
+        "ours": 0.0702,
+        "b2_naive": 0.0462,
+        "b1_full": 0.0512
+      },
+      {
+        "kind": "return_delay",
+        "drift": "off",
+        "ours": 0.0,
+        "b2_naive": 0.0,
+        "b1_full": 0.0
+      },
+      {
+        "kind": "return_delay",
+        "drift": "on",
+        "ours": 0.0,
+        "b2_naive": 0.0,
+        "b1_full": 0.0021
+      },
+      {
+        "kind": "return_fare_spike",
+        "drift": "off",
+        "ours": 0.2425,
+        "b2_naive": 0.2425,
+        "b1_full": 0.2425
+      },
+      {
+        "kind": "return_fare_spike",
+        "drift": "on",
+        "ours": 0.2425,
+        "b2_naive": 0.2425,
+        "b1_full": 0.2512
+      },
+      {
+        "kind": "storm_last_day",
+        "drift": "off",
+        "ours": 0.036,
+        "b2_naive": 0.036,
+        "b1_full": 0.036
+      },
+      {
+        "kind": "storm_last_day",
+        "drift": "on",
+        "ours": 0.036,
+        "b2_naive": 0.036,
+        "b1_full": 0.0449
+      },
+      {
+        "kind": "storm_mid_stay",
+        "drift": "off",
+        "ours": 0.0233,
+        "b2_naive": 0.0233,
+        "b1_full": 0.0233
+      },
+      {
+        "kind": "storm_mid_stay",
+        "drift": "on",
+        "ours": 0.0233,
+        "b2_naive": 0.0233,
+        "b1_full": 0.006
+      }
+    ]
+  },
+  "complete_benchmark": true
+}

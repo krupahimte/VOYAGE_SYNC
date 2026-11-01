@@ -1,0 +1,41 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+*.so
+*.pyd
+.venv/
+venv/
+env/
+
+# ── Local dev database ────────────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+
+# ── Environment secrets ───────────────────────────────────────────────────────
+.env
+.env.local
+.env.production
+
+# ── Node / frontend ───────────────────────────────────────────────────────────
+node_modules/
+frontend/dist/
+frontend/.env
+
+# ── Editors and OS ───────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/settings.json
+*.swp
+
+# ── pytest / coverage ─────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ── MyPy ──────────────────────────────────────────────────────────────────────
+.mypy_cache/

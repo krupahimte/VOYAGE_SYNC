@@ -1,0 +1,89 @@
+{
+  "_synthetic": true,
+  "_note": "Hand-written in the Duffel v2 offer-request response format (no test token was available). Offer 3 has arrival before departure and offer 4 has a zero price: both must be rejected by the parser. Replace with a real recording via scripts/record_fixtures.py.",
+  "data": {
+    "id": "orq_0000AAAAAAAAAAAAAAAAAA",
+    "live_mode": false,
+    "cabin_class": "economy",
+    "slices": [{"origin": {"iata_code": "ATH"}, "destination": {"iata_code": "JTR"}, "departure_date": "2026-11-15"}],
+    "offers": [
+      {
+        "id": "off_0000AAAAAAAAAAAAAAAAA1",
+        "total_amount": "142.30",
+        "total_currency": "EUR",
+        "owner": {"name": "Duffel Airways", "iata_code": "ZZ"},
+        "slices": [{
+          "origin": {"type": "airport", "iata_code": "ATH", "name": "Athens International Airport", "city_name": "Athens", "latitude": 37.9364, "longitude": 23.9445},
+          "destination": {"type": "airport", "iata_code": "JTR", "name": "Santorini (Thira) International Airport", "city_name": "Santorini", "latitude": 36.3992, "longitude": 25.4793},
+          "duration": "PT0H50M",
+          "segments": [{
+            "departing_at": "2026-11-15T09:10:00",
+            "arriving_at": "2026-11-15T10:00:00",
+            "marketing_carrier": {"name": "Duffel Airways", "iata_code": "ZZ"},
+            "marketing_carrier_flight_number": "0721",
+            "passengers": [{"passenger_id": "pas_1", "cabin_class": "economy"}]
+          }]
+        }]
+      },
+      {
+        "id": "off_0000AAAAAAAAAAAAAAAAA2",
+        "total_amount": "118.90",
+        "total_currency": "EUR",
+        "owner": {"name": "Duffel Airways", "iata_code": "ZZ"},
+        "slices": [{
+          "origin": {"type": "airport", "iata_code": "ATH", "name": "Athens International Airport", "city_name": "Athens", "latitude": 37.9364, "longitude": 23.9445},
+          "destination": {"type": "airport", "iata_code": "JTR", "name": "Santorini (Thira) International Airport", "city_name": "Santorini", "latitude": 36.3992, "longitude": 25.4793},
+          "duration": "PT3H05M",
+          "segments": [
+            {
+              "departing_at": "2026-11-15T06:30:00",
+              "arriving_at": "2026-11-15T07:25:00",
+              "marketing_carrier": {"name": "Duffel Airways", "iata_code": "ZZ"},
+              "marketing_carrier_flight_number": "0610",
+              "passengers": [{"passenger_id": "pas_1", "cabin_class": "economy"}]
+            },
+            {
+              "departing_at": "2026-11-15T08:45:00",
+              "arriving_at": "2026-11-15T09:35:00",
+              "marketing_carrier": {"name": "Duffel Airways", "iata_code": "ZZ"},
+              "marketing_carrier_flight_number": "0612",
+              "passengers": [{"passenger_id": "pas_1", "cabin_class": "economy"}]
+            }
+          ]
+        }]
+      },
+      {
+        "id": "off_0000AAAAAAAAAAAAAAAAA3",
+        "total_amount": "99.00",
+        "total_currency": "EUR",
+        "owner": {"name": "Duffel Airways", "iata_code": "ZZ"},
+        "slices": [{
+          "origin": {"type": "airport", "iata_code": "ATH", "name": "Athens International Airport", "city_name": "Athens"},
+          "destination": {"type": "airport", "iata_code": "JTR", "name": "Santorini (Thira) International Airport", "city_name": "Santorini"},
+          "segments": [{
+            "departing_at": "2026-11-15T12:00:00",
+            "arriving_at": "2026-11-15T11:10:00",
+            "marketing_carrier": {"name": "Duffel Airways", "iata_code": "ZZ"},
+            "marketing_carrier_flight_number": "0733"
+          }]
+        }]
+      },
+      {
+        "id": "off_0000AAAAAAAAAAAAAAAAA4",
+        "total_amount": "0.00",
+        "total_currency": "EUR",
+        "owner": {"name": "Duffel Airways", "iata_code": "ZZ"},
+        "slices": [{
+          "origin": {"type": "airport", "iata_code": "ATH", "name": "Athens International Airport", "city_name": "Athens"},
+          "destination": {"type": "airport", "iata_code": "JTR", "name": "Santorini (Thira) International Airport", "city_name": "Santorini"},
+          "segments": [{
+            "departing_at": "2026-11-15T15:00:00",
+            "arriving_at": "2026-11-15T15:50:00",
+            "marketing_carrier": {"name": "Duffel Airways", "iata_code": "ZZ"},
+            "marketing_carrier_flight_number": "0745"
+          }]
+        }]
+      }
+    ]
+  }
+}

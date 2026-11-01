@@ -1,0 +1,67 @@
+# Hand labels: the expected true affected set A, used to validate the oracle (plan §6.6).
+#
+# Written before the oracle was run on the benchmark, by reasoning about the domain rules
+# (the mock timeline and the contract definitions), not by reading oracle output.
+# Rules match on scenario kind and facts and apply to every trip template; ALL_DAY_PLANS expands to
+# day_1_plan … day_N_plan. The team should review them; a disagreement is reported, never tuned away.
+#
+# Timeline: the cheapest outbound departs 08:00 and arrives 14:00; pickup is arrival + 30 min; the
+# flight→transfer contract needs a 15–90 min gap (inclusive). The cheapest return departs 16:00; the
+# departure transfer drops off 3 h before; the transfer→departure contract needs 2–4 h. Alternative
+# offers are outbound 11:30 (×1.12) and 06:00 arriving 14:00 (×1.25), and return 09:00 (×1.10) and
+# 19:30 (×1.20).
+
+rules:
+  - kind: outbound_delay
+    facts: {delay_minutes: 15}
+    affected: []
+    why: Arrival 14:15, pickup 14:30, a gap of exactly 15 min, which meets the inclusive minimum, so nothing breaks.
+
+  - kind: return_delay
+    facts: {delay_minutes: 240}
+    affected: [airport_transfer_out]
+    why: >-
+      Departure moves to 20:00. The drop-off (~13:00) is now 7 h early, which breaks the 2–4 h window,
+      so the transfer is re-timed. Its route and cost are unchanged, so the budget holds. The later pickup
+      still follows the last day plan.
+
+  - kind: outbound_cancellation
+    facts: {}
+    affected: [flight_outbound, budget_check]
+    why: >-
+      Re-planned with frozen context, the replacement closest in arrival is the 06:00 offer, which also
+      arrives 14:00, so the transfer, hotel and day 1 still hold. Its price is ×1.25, so the budget line
+      item changes.
+
+  - kind: return_cancellation
+    facts: {}
+    affected: [flight_return, airport_transfer_out, budget_check]
+    why: >-
+      The replacement closest to 16:00 is 19:30 (3.5 h away; 09:00 is 7 h away). The old drop-off is now
+      6.5 h before departure, which breaks the 2–4 h window, so the transfer is re-timed. The price is
+      ×1.20, so the budget changes.
+
+  - kind: hotel_overbooked
+    facts: {}
+    affected: [hotel_stay, airport_transfer_in, airport_transfer_out, ALL_DAY_PLANS, budget_check]
+    why: >-
+      A different hotel breaks "transfer serves hotel" on both transfers and "stay covers day (same hotel)"
+      on every day plan. The new hotel's quote differs from the old one, so the budget changes.
+
+  - kind: hotel_price_spike
+    facts: {pct: 10}
+    affected: [budget_check]
+    why: Only the hotel's cost changes; the only contract that reads it is the budget line item.
+
+  - kind: return_fare_spike
+    facts: {pct: 60}
+    affected: [budget_check]
+    why: Only the fare changes; the transfer contracts read times, not prices.
+
+explicit:
+  - scenario: santorini_solo_luxury__outbound_delay_300
+    affected: [airport_transfer_in, day_1_plan, budget_check]
+    why: >-
+      Plan §5.3. Arrival 19:00 breaks the 14:30 pickup, so the transfer is redone. The new drop-off
+      misses the 18:00 sunset, so day 1 is redone. Check-in until 23:59 still holds, so the hotel is
+      untouched. Day 1 changes cost, so the budget is redone.

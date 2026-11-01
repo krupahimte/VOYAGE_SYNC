@@ -1,0 +1,20 @@
+{
+  "results": [
+    {
+      "id": 1275339,
+      "name": "Mumbai",
+      "latitude": 19.07283,
+      "longitude": 72.88261,
+      "elevation": 8.0,
+      "feature_code": "PPLA",
+      "country_code": "IN",
+      "admin1_id": 1264418,
+      "timezone": "Asia/Kolkata",
+      "population": 12691836,
+      "country_id": 1269750,
+      "country": "India",
+      "admin1": "Maharashtra"
+    }
+  ],
+  "generationtime_ms": 0.44584274
+}

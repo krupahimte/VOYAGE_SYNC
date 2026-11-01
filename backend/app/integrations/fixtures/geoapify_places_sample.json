@@ -1,0 +1,27 @@
+{
+  "_synthetic": true,
+  "_note": "Hand-written in the Geoapify Places v2 GeoJSON format with fictional names (no API key was available). The third feature has no name and the fourth has an out-of-range latitude: both must be rejected.",
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"name": "Caldera View Hotel", "place_id": "51sample0001", "lat": 36.4171, "lon": 25.4322, "formatted": "Caldera View Hotel, Fira 847 00, Greece", "categories": ["accommodation", "accommodation.hotel"], "datasource": {"sourcename": "openstreetmap"}},
+      "geometry": {"type": "Point", "coordinates": [25.4322, 36.4171]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "Old Port Lookout", "place_id": "51sample0002", "lat": 36.4152, "lon": 25.4301, "formatted": "Old Port Lookout, Fira, Greece", "categories": ["tourism", "tourism.sights"], "datasource": {"sourcename": "openstreetmap"}},
+      "geometry": {"type": "Point", "coordinates": [25.4301, 36.4152]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"place_id": "51sample0003", "lat": 36.42, "lon": 25.43, "categories": ["accommodation.hotel"]},
+      "geometry": {"type": "Point", "coordinates": [25.43, 36.42]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "Broken Coordinates Inn", "place_id": "51sample0004", "lat": 136.4, "lon": 25.43, "categories": ["accommodation.hotel"]},
+      "geometry": {"type": "Point", "coordinates": [25.43, 136.4]}
+    }
+  ]
+}

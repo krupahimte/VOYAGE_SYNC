@@ -1,0 +1,16 @@
+{
+  "_synthetic": true,
+  "_note": "Hand-written in the Duffel /places/suggestions response format (no test token was available).",
+  "data": [
+    {
+      "type": "city",
+      "id": "cit_jtr_0000",
+      "name": "Santorini",
+      "iata_code": "JTR",
+      "iata_country_code": "GR",
+      "airports": [
+        {"type": "airport", "id": "arp_jtr_gr", "iata_code": "JTR", "name": "Santorini (Thira) International Airport", "city_name": "Santorini", "latitude": 36.3992, "longitude": 25.4793, "time_zone": "Europe/Athens"}
+      ]
+    }
+  ]
+}

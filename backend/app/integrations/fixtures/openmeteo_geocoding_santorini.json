@@ -1,0 +1,56 @@
+{
+  "results": [
+    {
+      "id": 252919,
+      "name": "Santorini",
+      "latitude": 36.40572,
+      "longitude": 25.45682,
+      "elevation": 100.0,
+      "feature_code": "ISL",
+      "country_code": "GR",
+      "admin1_id": 6697808,
+      "admin2_id": 259819,
+      "timezone": "Europe/Athens",
+      "population": 15453,
+      "country_id": 390903,
+      "country": "Greece",
+      "admin1": "South Aegean",
+      "admin2": "Nomós Kykládon"
+    },
+    {
+      "id": 13263542,
+      "name": "Santorini",
+      "latitude": 31.29361,
+      "longitude": -110.9458,
+      "elevation": 1241.0,
+      "feature_code": "PPLX",
+      "country_code": "MX",
+      "admin1_id": 3982846,
+      "admin2_id": 8583407,
+      "timezone": "America/Hermosillo",
+      "country_id": 3996063,
+      "country": "Mexico",
+      "admin1": "Sonora",
+      "admin2": "Nogales Municipality"
+    },
+    {
+      "id": 6299511,
+      "name": "Santorini Airport",
+      "latitude": 36.39917,
+      "longitude": 25.47933,
+      "elevation": 38.0,
+      "feature_code": "AIRP",
+      "country_code": "GR",
+      "admin1_id": 6697808,
+      "admin2_id": 259819,
+      "admin3_id": 8133832,
+      "timezone": "Europe/Athens",
+      "country_id": 390903,
+      "country": "Greece",
+      "admin1": "South Aegean",
+      "admin2": "Nomós Kykládon",
+      "admin3": "Santorini"
+    }
+  ],
+  "generationtime_ms": 3.1791925
+}

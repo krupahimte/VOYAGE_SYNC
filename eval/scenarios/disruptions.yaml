@@ -1,0 +1,57 @@
+# Disruption catalogue: kind × severity, applied to every trip template.
+# target "storm_mid" / "storm_last" resolve per trip (middle / last day of the stay).
+
+- kind: outbound_delay
+  type: FLIGHT_DELAY
+  target: flight_outbound
+  levels:
+    - {severity: low, facts: {delay_minutes: 15}}
+    - {severity: medium, facts: {delay_minutes: 90}}
+    - {severity: medium, facts: {delay_minutes: 180}}
+    - {severity: high, facts: {delay_minutes: 300}}
+    - {severity: high, facts: {delay_minutes: 480}}
+    - {severity: extreme, facts: {delay_minutes: 600}}
+
+- kind: return_delay
+  type: FLIGHT_DELAY
+  target: flight_return
+  levels:
+    - {severity: low, facts: {delay_minutes: 60}}
+    - {severity: high, facts: {delay_minutes: 240}}
+
+- kind: outbound_cancellation
+  type: FLIGHT_CANCELLATION
+  target: flight_outbound
+  levels: [{severity: high, facts: {}}]
+
+- kind: return_cancellation
+  type: FLIGHT_CANCELLATION
+  target: flight_return
+  levels: [{severity: high, facts: {}}]
+
+- kind: hotel_overbooked
+  type: HOTEL_OVERBOOKED
+  target: hotel_stay
+  levels: [{severity: high, facts: {}}]
+
+- kind: storm_mid_stay
+  type: WEATHER_STORM
+  target: storm_mid
+  levels: [{severity: medium, facts: {condition: thunderstorm}}]
+
+- kind: storm_last_day
+  type: WEATHER_STORM
+  target: storm_last
+  levels: [{severity: medium, facts: {condition: thunderstorm}}]
+
+- kind: hotel_price_spike
+  type: PRICE_SPIKE
+  target: hotel_stay
+  levels:
+    - {severity: low, facts: {pct: 10}}
+    - {severity: medium, facts: {pct: 30}}
+
+- kind: return_fare_spike
+  type: PRICE_SPIKE
+  target: flight_return
+  levels: [{severity: high, facts: {pct: 60}}]
