@@ -39,6 +39,17 @@ class Strategy(str, Enum):
     CONTRACT = "contract"
     FULL = "full"
     NAIVE = "naive"
+    # Repair search (app.core.repair): the same contract-pruned region, with a choice among options.
+    GREEDY = "greedy"            # E1g
+    EXHAUSTIVE = "exhaustive"    # EXH, the optimality reference
+    BEAM = "beam"                # E2, contract-pruned beam search
+    RANDOM = "random"            # RS, random repairs (the GA's control)
+    GA = "ga"                    # E3, genetic algorithm
+    HYBRID = "hybrid"            # E4, beam search seeding the GA
+
+
+REPAIR_STRATEGIES = {Strategy.GREEDY, Strategy.EXHAUSTIVE, Strategy.BEAM, Strategy.RANDOM, Strategy.GA,
+                     Strategy.HYBRID}
 
 
 @dataclass
@@ -59,6 +70,8 @@ class ReplanResult:
     api_calls: dict[str, int] = field(default_factory=dict)
     contracts_total: int = 0
     contracts_holding: int = 0
+    repair: dict[str, Any] | None = None                    # repair-search summary (search strategies only)
+    validation: dict[str, Any] | None = None                # hard-constraint check of the result (every strategy)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -89,9 +102,12 @@ def _descendants(store: GraphStore, root: str) -> list[str]:
 
 
 class Replanner:
-    def __init__(self, registry: AgentRegistry, *, max_concurrency: int = 4, max_retries: int = 2) -> None:
+    def __init__(self, registry: AgentRegistry, *, max_concurrency: int = 4, max_retries: int = 2,
+                 repair_params: Any = None, policy_params: Any = None) -> None:
         self.registry = registry
         self.scheduler = Scheduler(registry, max_concurrency=max_concurrency, max_retries=max_retries)
+        self.repair_params = repair_params      # SearchParams for the search strategies; None = defaults
+        self.policy_params = policy_params      # PolicyParams (beam width, seed); None = defaults
 
     async def replan(
         self,
@@ -117,9 +133,13 @@ class Replanner:
         llm_before = llm.calls if llm is not None else 0
         started = time.perf_counter()
         ctx = {**(context or {}), "graph_id": store.graph_id, "replan_event": event_id}
+        # Nodes are replaced, never mutated, on every update, so this keeps the plan as it was.
+        reference = {n.id: n for n in store.list_nodes()}
 
         if strategy == Strategy.CONTRACT:
             await self._contract(store, target, trigger, result, use_frozen_context, ctx)
+        elif strategy in REPAIR_STRATEGIES:
+            await self._repair(store, target, trigger, result, strategy, event_id)
         else:
             if strategy == Strategy.FULL:
                 pinned = {n.id for n in store.list_nodes() if n.inputs.get("facts")}
@@ -145,7 +165,25 @@ class Replanner:
                              store.get_node(e.source_id).output, store.get_node(e.destination_id).output).holds
                   for e in store.list_edges()]
         result.contracts_total, result.contracts_holding = len(checks), sum(checks)
+        result.validation = self._validate(store, reference, result)
         return result
+
+    @staticmethod
+    def _validate(store: GraphStore, reference: dict, result: ReplanResult) -> dict[str, Any]:
+        """
+        The hard constraints (app.core.repair.constraints) on what this replan left in the store.
+        Every strategy gets it; it never changes the status. ``silent_failure`` = something was
+        regenerated, yet the plan is infeasible and nothing flagged it as a conflict.
+        """
+        from types import SimpleNamespace
+
+        from app.core.repair.constraints import goal_from_graph, validate_plan
+
+        snapshot = SimpleNamespace(get_node=lambda nid: reference[nid])
+        report = validate_plan(store, snapshot, result.stale, goal_from_graph(store))
+        conflict = result.repair is not None and not result.repair.get("committed")
+        return {**report.to_dict(), "silent_failure": bool(result.regenerated) and not report.feasible
+                and not conflict}
 
     # ── contract-checked PROPAGATE ────────────────────────────────────────────
 
@@ -183,6 +221,36 @@ class Replanner:
                     if not check.holds:
                         self._mark_stale(store, child, f"{edge.contract} broken by {nid}: {check.explanation}",
                                          result)
+
+    # ── repair search (E1g, EXH) ──────────────────────────────────────────────
+
+    async def _repair(self, store, target, trigger, result, strategy, event_id) -> None:
+        """
+        Search the options of the contract-pruned region and commit the best feasible plan
+        atomically. With no feasible plan nothing is committed and ``result.repair`` says why.
+        """
+        from app.core.repair.commit import repair
+        from app.core.repair.policies import PolicyParams
+        from app.core.repair.search import SearchParams
+
+        outcome, changed, commit_error = await repair(self.registry, store, target, trigger,
+                                                      policy=strategy.value,
+                                                      params=self.repair_params or SearchParams(),
+                                                      event_id=event_id,
+                                                      policy_params=self.policy_params or PolicyParams())
+        summary = outcome.summary()
+        summary["ga_trace"] = getattr(outcome, "ga_trace", None)
+        summary["decision_log"] = getattr(outcome, "decision_log", None)
+        summary["stages"] = getattr(outcome, "stages", None)
+        summary["committed"] = outcome.feasible and not commit_error
+        summary["commit_error"] = commit_error
+        result.repair = summary
+        if summary["committed"]:
+            result.stale = list(summary["region"])
+            result.stale_reasons = dict(summary["stale_reasons"])
+            result.regenerated = [nid for nid in store.validate() if nid in summary["region"]]
+            result.changed = changed
+            result.levels = len({_depths(store)[1][nid] for nid in result.regenerated})
 
     # ── shared helpers ────────────────────────────────────────────────────────
 

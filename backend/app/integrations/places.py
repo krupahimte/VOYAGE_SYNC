@@ -112,11 +112,14 @@ class MockPlaces:
     def __init__(self, usage: UsageMeter, drift: Any = None) -> None:
         self._usage = usage
         self.drift = drift                  # evaluation only (app.integrations.drift)
+        self.extra_hotels = 0               # evaluation only: the stress option profile adds accommodation
 
     def build_raw(self, categories: list[str], lat: float, lon: float, limit: int, city: str) -> dict:
         features = []
         for category in categories:
             names = _MOCK_NAMES.get(category) or _MOCK_NAMES.get(category.split(".")[0]) or []
+            if self.extra_hotels and category.startswith("accommodation."):
+                names = names + [f"{{city}} Guesthouse {n}" for n in range(1, self.extra_hotels + 1)]
             for i, template in enumerate(names):
                 name = template.replace("{city}", city or "City")
                 h = _h(city, category, name)

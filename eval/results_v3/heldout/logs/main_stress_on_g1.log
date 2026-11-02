@@ -1,0 +1,7 @@
+  heldout/stress: 20/110 scenarios (1457 s)
+  heldout/stress: 40/110 scenarios (2319 s)
+  heldout/stress: 60/110 scenarios (3160 s)
+  heldout/stress: 80/110 scenarios (4133 s)
+  heldout/stress: 100/110 scenarios (44881 s)
+  heldout/stress: 110/110 scenarios (45296 s)
+wrote eval\results_v3\heldout\main\stress_on_g1 (7260 runs)

@@ -14,9 +14,9 @@ outbound, departure for return); price breaks ties.
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import Any
+from typing import Any, NamedTuple
 
-from app.agents.base import AgentResult, BaseAgent
+from app.agents.base import AgentResult, BaseAgent, distinct
 from app.agents.common import currency_of, travelers_of
 from app.agents.validation import finish
 from app.core.contracts import check_edge
@@ -24,12 +24,38 @@ from app.core.models import NodeType, TaskNode
 from app.integrations.http import ProviderError
 
 
+class _Search(NamedTuple):
+    day: date
+    origin: Any
+    destination: Any
+    pairs: list[tuple[float, Any]]      # (price in the trip currency, offer), in search order
+    rejected: list[str]
+
+
 class FlightAgent(BaseAgent):
     def __init__(self, providers: Any) -> None:
         self.p = providers
 
     async def run(self, node: TaskNode, resolved_inputs: dict[str, Any], frozen_context: dict[str, Any]) -> AgentResult:
-        ri = resolved_inputs
+        found = await self._search(resolved_inputs)
+        if isinstance(found, AgentResult):
+            return found
+        direction = resolved_inputs.get("direction", "outbound")
+        cost, best = min(found.pairs, key=self._ranker(direction, frozen_context))
+        return self._output(resolved_inputs, found, cost, best, frozen_context)
+
+    async def candidates(self, node: TaskNode, resolved_inputs: dict[str, Any], frozen_context: dict[str, Any],
+                         k: int) -> list[AgentResult]:
+        """The valid offers in the order ``run`` ranks them (a stable sort, so option 0 is its choice)."""
+        found = await self._search(resolved_inputs)
+        if isinstance(found, AgentResult):
+            return [found]
+        direction = resolved_inputs.get("direction", "outbound")
+        ranked = sorted(found.pairs, key=self._ranker(direction, frozen_context))
+        return distinct([self._output(resolved_inputs, found, cost, offer, frozen_context) for cost, offer in ranked], k)
+
+    async def _search(self, ri: dict[str, Any]) -> "_Search | AgentResult":
+        """Valid offers priced in the trip currency, or the failure ``run`` reports."""
         direction = ri.get("direction", "outbound")
         currency = currency_of(ri)
         travelers = travelers_of(ri)
@@ -63,8 +89,15 @@ class FlightAgent(BaseAgent):
 
         if not valid:
             return AgentResult.fail(f"no valid flight offers ({len(rejected)} rejected)", retryable=False)
+        return _Search(day, origin, destination, list(zip(priced, valid)), rejected)
 
-        cost, best = min(zip(priced, valid), key=self._ranker(direction, frozen_context))
+    @staticmethod
+    def _output(ri: dict[str, Any], found: "_Search", cost: float, best: Any,
+                frozen_context: dict[str, Any]) -> AgentResult:
+        direction = ri.get("direction", "outbound")
+        currency = currency_of(ri)
+        travelers = travelers_of(ri)
+        day, origin, destination = found.day, found.origin, found.destination
         airport = lambda a: {"iata": a.iata, "name": a.name, "city": a.city,  # noqa: E731
                              "latitude": a.latitude, "longitude": a.longitude}
         return finish(NodeType.FLIGHT, {
@@ -90,8 +123,8 @@ class FlightAgent(BaseAgent):
             "offer_id": best.offer_id,
             "status": "offered",
             "source": best.source,
-            "offers_considered": len(valid),
-            "offers_rejected": len(rejected),
+            "offers_considered": len(found.pairs),
+            "offers_rejected": len(found.rejected),
             "selection": "least-change" if frozen_context.get("previous_output") else "cheapest",
         })
 

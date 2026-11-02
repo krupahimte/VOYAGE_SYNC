@@ -17,13 +17,13 @@ from app.core.graph import GraphStore
 from app.core.models import NodeType
 from app.core.monitor.apply import ApplyOutcome, apply_event
 from app.core.monitor.events import DisruptionEvent, DisruptionType
-from app.core.replanner import Replanner, ReplanResult, Strategy
+from app.core.replanner import REPAIR_STRATEGIES, Replanner, ReplanResult, Strategy
 from app.integrations.http import ProviderError
 from app.integrations.weather import FORECAST_HORIZON_DAYS
 
 logger = logging.getLogger(__name__)
 
-Status = Literal["replanned", "no_effect", "duplicate", "invalid"]
+Status = Literal["replanned", "no_effect", "duplicate", "invalid", "conflict"]
 
 
 @dataclass
@@ -67,7 +67,7 @@ class DisruptionMonitor:
         if applied.kind in ("duplicate", "invalid"):
             logger.info("Disruption %s dropped (%s): %s", event.event_id, applied.kind, applied.message)
             return MonitorOutcome(event, applied.kind, applied.message, applied)
-        if strategy == Strategy.CONTRACT and not applied.has_effect:
+        if (strategy == Strategy.CONTRACT or strategy in REPAIR_STRATEGIES) and not applied.has_effect:
             logger.info("Disruption %s recorded with no effect: %s", event.event_id, applied.message)
             return MonitorOutcome(event, "no_effect", applied.message, applied,
                                   latency_ms=round((time.perf_counter() - started) * 1000, 2))
@@ -75,9 +75,14 @@ class DisruptionMonitor:
         replan = await self.replanner.replan(store, applied.target, applied.kind, strategy=strategy,
                                              use_frozen_context=use_frozen_context, event_id=event.event_id,
                                              context=context)
+        latency = round((time.perf_counter() - started) * 1000, 2)
+        if replan.repair is not None and not replan.repair.get("committed"):
+            conflict = replan.repair.get("conflict") or {}
+            message = (f"{applied.message}; conflict: {conflict.get('reason', 'no feasible plan')}, "
+                       f"nothing regenerated — the user decides")
+            return MonitorOutcome(event, "conflict", message, applied, replan, latency_ms=latency)
         message = f"{applied.message}; regenerated {len(replan.regenerated)} task(s)"
-        return MonitorOutcome(event, "replanned", message, applied, replan,
-                              latency_ms=round((time.perf_counter() - started) * 1000, 2))
+        return MonitorOutcome(event, "replanned", message, applied, replan, latency_ms=latency)
 
     async def poll_weather(self, store: GraphStore, providers: Any, *, today: date | None = None
                            ) -> list[DisruptionEvent]:

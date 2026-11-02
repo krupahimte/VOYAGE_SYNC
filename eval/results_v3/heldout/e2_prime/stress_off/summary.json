@@ -1,0 +1,26 @@
+{
+  "stress|drift_off|E250": {
+    "scenarios": 440,
+    "feasible_rate": 0.954545,
+    "conflict_rate": 0.045455,
+    "fitness_feasible_mean": -0.368268,
+    "fitness_seed_sd_mean": 0.0,
+    "disruption_mean": 0.11732,
+    "money_mean": 0.07935,
+    "activity_time_lost_mean": 0.012867,
+    "approvals_mean": 0.15873,
+    "plan_evaluations_mean": 24.74,
+    "silent_failure_rate": 0.0,
+    "requirement_satisfaction_mean": 0.8625,
+    "partial_evaluations_mean": 200.3525,
+    "option_generations_mean": 51.3025,
+    "api_calls_mean": 28.511364,
+    "llm_calls_mean": 0.261364,
+    "latency_ms_median": 14.07,
+    "timed_out_runs": 0,
+    "necessity_coverage_mean": 1.0,
+    "excess_scope_mean": 0.035714,
+    "legacy_precision_mean": null,
+    "legacy_recall_mean": null
+  }
+}

@@ -1,0 +1,182 @@
+# Pre-registration for the BFS + beam search + GA hybrid experiments (E1–E4).
+#
+# DRAFT. Written before any hybrid code or dev run (Phase 0). Values marked
+# `tune_on_dev` are chosen on the dev trips only. Before the held-out run
+# (Phase 10), `status` becomes `frozen`, the remaining TBD fields are filled in,
+# and the file's sha256 is recorded in `frozen_sha256` and committed. After
+# that, the experiment runner refuses to start if the hash does not match. Any
+# later change must be listed under `deviations` with its reason.
+
+status: frozen            # draft | frozen
+frozen_sha256: d2bd96c9808a15423fe408182cc9d50da4b4d13bb49b5fdae36748636bf57184
+frozen_at: 2026-11-02
+deviations:
+  - date: 2026-11-01
+    what: "split: dev = the 10 templates of eval/scenarios/trips.yaml, held-out = 20 new templates (eval/scenarios_v3/trips_heldout.yaml), instead of a stratified 9/21 over 30"
+    why: "the 10 existing trips were already explored (Phases 3 and 5: greedy vs exhaustive, ground truth); only never-run trips keep held-out results unseen. Decided by the team before any held-out run."
+  - date: 2026-11-01
+    what: "stress catalogue: the realistic single disruptions plus 6 combined two-event disruptions, with a larger option space (8 flight offers, 8 hotels, 6 pickup timings)"
+    why: "the realistic option space has at most 48 plans, below the 500-evaluation budget, so H2/H3 could not be tested there. Decided by the team before any dev run."
+  - date: 2026-11-01
+    what: "ground-truth source hashes re-stamped (itinerary.py, search.py, flights.py, places.py) after adding the stress profile and combined events; new sha256 1855be06…"
+    why: "a full recompute reproduced the stored ground truth exactly (ground_truth.py --rehash); the default option space is unchanged"
+  - date: 2026-11-02
+    what: "H2/H3 direction criterion: rank-biserial effect > 0 instead of median difference > 0"
+    why: "dev runs showed ~97% exact ties (equal fitness), so the median difference is 0 whatever the remaining scenarios show and the hypotheses could never hold; the rank-biserial effect reflects the non-tied scenarios. Changed before the freeze; on dev both rules give the same verdict (H2 and H3 do not hold, Holm p = 0.19), so the change was not made to pass a test."
+  - date: 2026-11-02
+    what: "report fixes (not analysis changes): fitness differences rounded to 1e-9 so float noise counts as a tie; Holm p-values no longer rounded to 6 decimals"
+    why: "seed means of equal fitness differed by ~1e-17 and entered the Wilcoxon test as random-sign differences; found on dev before the freeze"
+
+decisions_accepted: 2026-11-01   # review decisions R1–R12, accepted by the team
+
+claims:
+  # The paper may only make claims that follow from these tests on held-out results.
+  H1: "E2 (beam) produces repairs that Pareto-dominate E1g (greedy over the same options) more often than the reverse."
+  H2: "E3 (GA) reaches higher fitness than RS (random search) at an equal evaluation budget."
+  H3: "E4 (hybrid) reaches higher fitness than E2 with its beam width matched to the same evaluation budget."
+  H4: "E2–E4 commit no infeasible plan without flagging it (silent-failure rate 0), while E1 does on unrepairable scenarios."
+  ga_justified_if: "H2 and H3 both hold on held-out scenarios; otherwise the paper reports 'GA not justified'."
+
+arms:
+  E1:  {strategy: contract, note: "existing contract PROPAGATE, unchanged (golden snapshot)"}
+  E1g: {strategy: greedy, note: "beam width 1 over the same option space and objective (action-space control)"}
+  E2:  {strategy: beam}
+  E3:  {strategy: ga}
+  E4:  {strategy: hybrid, note: "beam results seed the GA; beam evaluations count against the same budget"}
+  RS:  {strategy: random, note: "uniform random repairs, same evaluation budget (GA control)"}
+  EXH: {strategy: exhaustive, note: "optimality reference where the option space is at most max_exhaustive"}
+legacy_baselines: [b1_full, b2_naive]   # still reported, unchanged
+
+primary_metric: pareto_dominance_vs_e1   # R3: share of scenarios whose plan dominates E1's on all objective terms
+secondary_metrics:
+  - fitness
+  - each objective term separately
+  - necessity_coverage        # share of the necessity set included in the repair
+  - excess_scope              # |R| - min_scope
+  - scope_optimality          # min_scope / |R|
+  - conflict_rate
+  - silent_failure_rate
+  - requirement_satisfaction  # not optimised by any arm
+  - optimality_gap_vs_exh
+  - unique_plan_evaluations
+  - api_calls_made
+  - api_requests_unique
+  - mock_llm_calls
+legacy_metrics: "precision / recall / stability against the legacy oracle, reported for E1, B1, B2 only and labelled policy-conditioned"
+
+ground_truth:   # R1, R2
+  necessity_set: "intersection of repair regions over all feasible repairs in the option space (exhaustive), per drift condition"
+  min_scope: "smallest repair region over all feasible repairs"
+  computed_before_runs: true
+  stored_as: eval/scenarios_v3/ground_truth.yaml
+  sha256: 1855be06af3038be4bcd483d23bc9ba3000984f1cfec836c2bfc648bb72a770a   # written 2026-11-01 before any E2–E4 code; rehashed (see deviations)
+  verified_by: "eval.ground_truth.load_verified (file hash + sha256 of the 21 option-space source files)"
+  manual_labels: {annotators: 2, blind_to_outputs: true, agreement: cohen_kappa, adjudication: recorded,
+                  protocol: eval/scenarios_v3/labels/LABELLING_PROTOCOL.md,
+                  subset: "all 16 disruption levels on santorini_solo_luxury, goa_couple_domestic, tokyo_family_week (48 scenarios, 495 rows)",
+                  status: "sheets generated; not yet labelled"}
+  stated_limitations: [contract definitions, option space (k and kinds), drift timing]
+  legacy_oracle_comparison: "necessity = legacy A in 147 of 150 feasible scenarios; in 3 (outbound_delay_180) A also holds day_1_plan and budget_check, which a 15-min pickup avoids"
+
+objective:      # R4
+  terms: [disruption, money, activity_time_lost, approvals]
+  preference_term: TBD     # R5: only if activities record their category; otherwise reported as not measured
+  weights: {disruption: 1, money: 1, activity_time_lost: 1, approvals: 1}
+  scales:                  # fixed before any dev run (Phase 2); implemented in app/core/repair/objective.py
+    disruption: "mean over user-visible tasks except the disrupted one; per task 0 = unchanged, 1 = other flight or hotel, transfer = pickup shift / 180 min (capped at 1), day plan = share of its activities not kept"
+    money: "(total after - total before) / budget, plus 1.0 x the new overrun above the budget / budget; negative when the repair saves money"
+    activity_time_lost: "sum over days of max(0, minutes before - minutes after) / planned minutes"
+    approvals: "booked items whose offer changed / bookable items (flights + stay)"
+    travel_time: "inside disruption (a different flight, hotel or pickup), not a separate term"
+  scale_rationale: "three terms are fractions of the plan in [0, 1]; money is a fraction of the user's own budget, so one unit is one whole budget. With equal weights, replacing every visible task, losing every activity minute, re-booking every booked item or spending one extra budget each cost the same."
+  comparison: deb_feasibility_rule
+  sensitivity: "each weight x0.5 and x1.5, reported without re-tuning"
+
+hard_constraints:   # R6
+  - every edge contract holds and is evaluable
+  - agent output schemas
+  - trip dates
+  - party size
+  - exclusions (cancelled offers, overbooked hotels)
+  - tasks outside the repair region unchanged
+  - every repaired day plan has at least one activity; only day 1 may be empty, when drop-off + 60 min rounded up to the next quarter hour is past midnight (as DayPlanAgent schedules)
+soft_constraints: [budget]
+facts_target_is_decision: false   # R7: a delayed flight is reality in every arm; a cancelled one is re-booked
+
+budget:             # R8
+  unit: unique_full_plan_evaluations
+  per_arm: 500      # tune_on_dev
+  wall_clock_timeout_s: 2   # safety only; a run that hits it is flagged, never silently kept
+  max_exhaustive: 10000
+  counted: "complete repairs validated and scored; for RS and the GA also dead-end draws (each drawn candidate costs one)"
+  reported_alongside: "partial evaluations (beam ranks children by partial fitness; not in the budget), option generations, option cache hits, API calls — so beam's extra work is visible, not hidden by the unit"
+
+parameters:         # R9, all tune_on_dev
+  beam_width_grid: [1, 3, 5, 10]
+  ga: {population: 30, generations: "budget // population", tournament: 3, p_crossover: 0.8,
+       p_mutation: "1 / chromosome_length", elitism: 2, patience: 10,
+       chromosome: "one gene (an option rank) per task the disruption can reach: the target if it is re-planned, and its descendants",
+       decoder: "the repair decoder shared with RS; genes of tasks outside the decoded region have no effect",
+       selection: "tournament on the Deb key (feasible first, fewer violations, higher fitness); dead ends rank last",
+       crossover: uniform, mutation: "per gene, a new random rank",
+       first_population: "option 0 everywhere (E1's choices) + seeds (hybrid only) + random chromosomes",
+       elitism_rule: "the 2 best distinct chromosomes survive unchanged, so the best key never gets worse"}
+  hybrid: {beam_width: "same grid as E2", seeds: "encodings of the beam's best feasible plans, at most population / 3",
+           budget: "one shared budget: the beam's evaluations count against it", result: "the best plan either stage found"}
+  dead_ends: "RS and the GA charge each distinct dead end once (keyed by its decoding path); repeats are free (changed in Phase 7 from one charge per dead-end draw, before any dev run)"
+  options_per_task: {FLIGHT: all_valid, STAY: 3, TRANSFER: 4, DAY_PLAN: 3}
+  beam: {ranking: "partial fitness, ties by the choices made (deterministic)", width_1_equals: E1g}
+  tuning:   # written before any tuning run (Phase 9)
+    data: "dev split only (both catalogues), drift on"
+    beam_width: "W* = the smallest width in {1, 3, 5, 10} whose mean fitness over feasible dev runs (both catalogues pooled) is within 1e-6 of the best width's; E4 uses W*"
+    h3_matched_width: "E2' = the largest width in {1, 3, 5, 10, 20, 50, 100} whose mean plan evaluations on dev stress (drift on) are at most E4's (width W*); H3 compares E4 with E2'"
+    not_tuned: "the GA parameters (pre-registered defaults), the objective weights (fixed equal a priori), the budget (500), RS's stopping rule"
+    dev_seeds: 5
+  primary_drift: "on (the legacy benchmark's headline setting); drift off is reported as a secondary analysis"
+  random_search: {decoder: "same as the GA: first option at or after the drawn index that survives the contract checks",
+                  max_draw_factor: 20, max_stall_draws: 200,
+                  rationale: "a space smaller than the budget is exhausted early; stopping after 200 draws in a row with nothing new keeps 160 scenarios x 20 seeds tractable, and the stopping reason is recorded per run"}
+
+seeds:              # R10
+  runs_per_scenario: 20
+  seed_rule: "sha256(base_seed | scenario_id | run_index)"
+  base_seed: 0
+  drift_seed: scenario_id   # unchanged from the legacy benchmark
+
+split:              # R11
+  unit: trip
+  dev_trips: [santorini_solo_luxury, goa_couple_domestic, jaipur_family_domestic, tokyo_family_week, lisbon_solo_budget, reykjavik_friends_adventure, bali_couple_relax, rome_couple_culture, dubai_solo_shopping, kyoto_group_slow]            # the 10 templates of eval/scenarios/trips.yaml (see deviations)
+  heldout_trips: [paris_couple_weekend, barcelona_friends_summer, istanbul_solo_culture, singapore_family_city, new_york_couple_luxury, bangkok_solo_budget, athens_family_history, amsterdam_solo_short, sydney_couple_long, london_group_theatre, mumbai_business_domestic, delhi_family_domestic, goa_friends_domestic, jaipur_couple_domestic, tokyo_couple_short, rome_group_long, dubai_family_winter, lisbon_couple_food, bali_solo_wellness, kyoto_couple_autumn]        # the 20 new templates of eval/scenarios_v3/trips_heldout.yaml
+  heldout_runs: 1
+
+tests:     # written in Phase 9, before any dev result was read; all on held-out, drift on
+  H1: {data: "both catalogues pooled", unit: "scenario (seed means)", compare: "E2 (W*) vs E1g on the 4 terms, scenarios where both are feasible",
+       test: "two-sided exact sign test on (#E2 dominates E1g) vs (#E1g dominates E2)", holds_if: "more E2 dominations and Holm-adjusted p < 0.05"}
+  H2: {data: stress, compare: "E3 vs RS fitness, scenarios where both are feasible", test: "Wilcoxon signed-rank on per-scenario seed-mean fitness differences",
+       holds_if: "rank-biserial effect > 0 (E3 better) and Holm-adjusted p < 0.05"}
+  H3: {data: stress, compare: "E4 (W*) vs E2' fitness, scenarios where both are feasible", test: "Wilcoxon signed-rank as H2",
+       holds_if: "rank-biserial effect > 0 (E4 better) and Holm-adjusted p < 0.05"}
+  H4: {data: "both catalogues pooled", compare: "silent failures of E1 vs each of E2, E3, E4", test: "two-sided exact sign test on scenarios where exactly one of the two fails silently",
+       holds_if: "E2, E3 and E4 have no silent failure and every comparison has Holm-adjusted p < 0.05"}
+  holm_family: [H1, H2, H3, "H4 (E1 vs E2)", "H4 (E1 vs E3)", "H4 (E1 vs E4)"]
+  secondary: ["H2 and H3 on the stress scenarios with more complete repairs than the budget (ground truth complete_repairs > 500)",
+              "drift off", "per-arm means with trip-cluster bootstrap CIs", "optimality gap to EXH", "scope metrics vs the ground truth",
+              "requirement satisfaction", "cost (evaluations, option generations, API and LLM calls, latency)"]
+
+statistics:
+  unit_of_analysis: scenario (paired across arms)
+  ci: "95 % bootstrap, resampling whole trips"
+  test: "Wilcoxon signed-rank, Pratt zero handling"
+  multiple_comparisons: holm
+  effect_size: rank_biserial
+
+e1_conflict_status: unchanged   # R12: E1 gets a validation flag only
+
+frozen_values:   # filled in by eval/freeze_preregistration.py
+  beam_width_w_star: 10
+  e2_prime_width: 50
+  ground_truth_sha256:
+    dev_realistic: 1855be06af3038be4bcd483d23bc9ba3000984f1cfec836c2bfc648bb72a770a
+    dev_stress: 7c5a2a8f970c37f316f323335b4cd6ea3740383ac4696a3ecb5659f6da6413cf
+    heldout_realistic: 57004d226f32e6f72172e535c8bd15229b531772804c3ac4448c12fa5e32f3fa
+    heldout_stress: 2dc8413888f3ade287fac7c2b74b3c22541c53341930721e62c79b0903357dd3

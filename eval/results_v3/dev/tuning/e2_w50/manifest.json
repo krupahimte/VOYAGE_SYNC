@@ -1,0 +1,85 @@
+{
+  "preregistration_digest": "6d41db2a28405b73f8f0824c9344a0035cc7ea2d827a58309bcbe09d917b381b",
+  "preregistration_status": "draft",
+  "configs": [
+    {
+      "split": "dev",
+      "catalogue": "realistic",
+      "arms": [
+        "E2"
+      ],
+      "drift_modes": [
+        true
+      ],
+      "seeds": 1,
+      "base_seed": 0,
+      "beam_width": 50,
+      "budget": 500,
+      "ga": {
+        "population": 30,
+        "generations": null,
+        "tournament": 3,
+        "p_crossover": 0.8,
+        "p_mutation": null,
+        "elitism": 2,
+        "patience": 10,
+        "seed_fraction": 0.3333333333333333
+      }
+    },
+    {
+      "split": "dev",
+      "catalogue": "stress",
+      "arms": [
+        "E2"
+      ],
+      "drift_modes": [
+        true
+      ],
+      "seeds": 1,
+      "base_seed": 0,
+      "beam_width": 50,
+      "budget": 500,
+      "ga": {
+        "population": 30,
+        "generations": null,
+        "tournament": 3,
+        "p_crossover": 0.8,
+        "p_mutation": null,
+        "elitism": 2,
+        "patience": 10,
+        "seed_fraction": 0.3333333333333333
+      }
+    }
+  ],
+  "ground_truth": {
+    "dev_realistic": "1855be06af3038be4bcd483d23bc9ba3000984f1cfec836c2bfc648bb72a770a",
+    "dev_stress": "7c5a2a8f970c37f316f323335b4cd6ea3740383ac4696a3ecb5659f6da6413cf"
+  },
+  "source_hashes": {
+    "app/agents/base.py": "06fb96dab01a730175a2004aa8accc2f5d4db90073a2c5fdee7128a9324d7fb4",
+    "app/agents/flight.py": "19dffe56ebe87f7208d83ea16beff3e53ffa51ef6273bd2399bc604390eb7766",
+    "app/agents/hotel.py": "e769b7eabe3d35940925a5913f3821fad8f073d55f3fcaf9c8c556f29aa1c07d",
+    "app/agents/itinerary.py": "f863c25da4e47615c338245bf8ef429584bf1537b296d6b3eff41feddf10f245",
+    "app/agents/budget.py": "02571d34d59807ab0e53c214b1eb62f374eaf099dda0cd4ef76f98cefd652eea",
+    "app/agents/weather.py": "9d473b18d6cf3499b4d302bc4b442f490f7bf44ee02089342028e42753d07073",
+    "app/agents/mocks.py": "ed3ef3994351f342797cf962fe141d15e8a0c33acf36a75ba61bd07a2ae67814",
+    "app/agents/common.py": "2c2cba53d51793db15c4bc5acf02143288de954c39670a93f993c1c8d936b423",
+    "app/agents/validation.py": "62e113a6d588b6020801e8b7dd098dd588fcd4220e7f143b7c4bd3a87b9d3d88",
+    "app/core/contracts.py": "73c9749003f0524cff3cb329a03b9fa377a15519a0eadc8c985c4f608707d7aa",
+    "app/core/templates.py": "dd4c9aad7f5471c71f87c9180b32d3f58a231375d9e7eb5b318d1a0db5e21be9",
+    "app/core/monitor/apply.py": "f4f0b17971670b3e96ea31ce8475384d30df46fb1031867c4ea5d6e4dfcf26cb",
+    "app/core/repair/search.py": "0f6d97487ad7f6f24455739942e26eacce4c187199f69208e883548475a40527",
+    "app/core/repair/constraints.py": "59ace7763e1697642106c4f7842e1f30684fd22196da626baf7d352dfcd4ba21",
+    "app/core/repair/view.py": "5267966fb6d8fdb8218e9275ba6bd973b15e6612abc28fa51d05be9932eefd0a",
+    "app/integrations/flights.py": "286e5ec163ca779504acd240b6fe3c2f47281ea14af2e21317437a2c110bdd2f",
+    "app/integrations/places.py": "02cffcdded106d4e918b5d43c4a8831abb77442c458a040aada722f3c95ab70c",
+    "app/integrations/booking.py": "76e8ae580b38f99001e37d6d7e0224617f19dbbc570e2d13bb0737e1d50490f6",
+    "app/integrations/drift.py": "41763cd3c65f4269d1fc34bb2b9310bfcc1d4c4f3f7a9639012073f133138d1f",
+    "app/integrations/routing.py": "5e92506e5544881a10dda10db3e96e18559d6ce9f39ca2bb190b64302935d895",
+    "app/integrations/fx.py": "564cd19aa4c73bb7ada1a0b7965a077b8f761e66c05571161f7b74accbb78019"
+  },
+  "drift": {
+    "price_pct": 0.08,
+    "drop_pct": 0.15
+  }
+}

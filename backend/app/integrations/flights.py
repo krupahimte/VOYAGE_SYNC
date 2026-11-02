@@ -174,6 +174,14 @@ _MOCK_SCHEDULE = {
     "outbound": [("08:00", 360, 1.00), ("11:30", 360, 1.12), ("06:00", 480, 1.25)],
     "return": [("16:00", 360, 1.00), ("09:00", 360, 1.10), ("19:30", 420, 1.20)],
 }
+# Further offers for the evaluation's stress option profile (``MockFlights.offer_count`` > 3). All are
+# dearer than the three above, so the cheapest offer, which planning books, is unchanged.
+_STRESS_SCHEDULE = {
+    "outbound": [("07:00", 360, 1.30), ("09:30", 360, 1.35), ("13:00", 360, 1.40), ("15:00", 360, 1.45),
+                 ("05:00", 480, 1.50)],
+    "return": [("12:00", 360, 1.30), ("14:00", 360, 1.35), ("18:00", 360, 1.40), ("21:00", 360, 1.45),
+               ("07:00", 360, 1.50)],
+}
 
 
 class MockFlights:
@@ -185,6 +193,7 @@ class MockFlights:
         self._usage = usage
         self._geocoder = geocoder
         self.drift = drift                  # evaluation only (app.integrations.drift)
+        self.offer_count = 3                # evaluation only: the stress option profile raises it (max 8)
         self._table = {slug(k): v for k, v in load_fixture("airports")["cities"].items()}
         self._synthetic: dict[str, AirportInfo] = {}
         self._looked_up: set[str] = set()
@@ -212,7 +221,9 @@ class MockFlights:
         per_person_usd = (220 + h % 480) * (2.2 if cabin == "business" else 1.0)
         carriers = [("ZZ", "Duffel Airways"), ("VY", "VoyageAir"), ("SK", "SkyMock")]
         offers = []
-        for i, (hm, minutes, factor) in enumerate(_MOCK_SCHEDULE.get(direction, _MOCK_SCHEDULE["outbound"])):
+        key = direction if direction in _MOCK_SCHEDULE else "outbound"
+        schedule = (_MOCK_SCHEDULE[key] + _STRESS_SCHEDULE[key])[: self.offer_count]
+        for i, (hm, minutes, factor) in enumerate(schedule):
             dep = datetime.fromisoformat(f"{departure_date.isoformat()}T{hm}:00")
             arr = dep + timedelta(minutes=minutes)
             code, name = carriers[(h + i) % len(carriers)]

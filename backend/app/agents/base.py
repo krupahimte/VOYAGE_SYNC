@@ -44,6 +44,17 @@ class AgentResult:
         return cls(success=False, output={}, retryable=retryable, error=error)
 
 
+def distinct(results: list[AgentResult], k: int) -> list[AgentResult]:
+    """The first *k* results with distinct outputs, in order (failures are dropped unless nothing succeeded)."""
+    kept: list[AgentResult] = []
+    for r in results:
+        if r.success and all(r.output != other.output for other in kept):
+            kept.append(r)
+        if len(kept) == k:
+            break
+    return kept or results[:1]
+
+
 # ── Agent base class ──────────────────────────────────────────────────────────
 
 class BaseAgent(abc.ABC):
@@ -65,6 +76,22 @@ class BaseAgent(abc.ABC):
         frozen_context: dict[str, Any],
     ) -> AgentResult:
         """Execute the task and return a structured result."""
+
+    async def candidates(
+        self,
+        node: TaskNode,
+        resolved_inputs: dict[str, Any],
+        frozen_context: dict[str, Any],
+        k: int,
+    ) -> list[AgentResult]:
+        """
+        Up to *k* alternative outputs for the repair search, best first and in a
+        fixed order. When ``run`` succeeds, option 0 is its output; options never
+        repeat an output. A failure is returned as a single failed result.
+        Default: the one output of ``run`` (agents with nothing to choose, such
+        as weather facts and the derived budget).
+        """
+        return [await self.run(node, resolved_inputs, frozen_context)]
 
 
 # ── Registry ──────────────────────────────────────────────────────────────────

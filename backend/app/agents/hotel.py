@@ -13,7 +13,7 @@ import math
 from datetime import date
 from typing import Any
 
-from app.agents.base import AgentResult, BaseAgent
+from app.agents.base import AgentResult, BaseAgent, distinct
 from app.agents.common import currency_of, locate, stable_hash, travelers_of
 from app.agents.validation import finish
 from app.core.models import NodeType, TaskNode
@@ -33,14 +33,32 @@ class HotelAgent(BaseAgent):
         self.p = providers
 
     async def run(self, node: TaskNode, resolved_inputs: dict[str, Any], frozen_context: dict[str, Any]) -> AgentResult:
-        ri = resolved_inputs
+        found = await self._ranked(resolved_inputs, frozen_context)
+        if isinstance(found, AgentResult):
+            return found
+        ranked, rejected = found
+        return await self._output(resolved_inputs, ranked[0], len(ranked), rejected)
+
+    async def candidates(self, node: TaskNode, resolved_inputs: dict[str, Any], frozen_context: dict[str, Any],
+                         k: int) -> list[AgentResult]:
+        """The first *k* hotels in ``run``'s order; each one costs a booking quote."""
+        found = await self._ranked(resolved_inputs, frozen_context)
+        if isinstance(found, AgentResult):
+            return [found]
+        ranked, rejected = found
+        return distinct([await self._output(resolved_inputs, hotel, len(ranked), rejected) for hotel in ranked[:k]], k)
+
+    async def _ranked(self, ri: dict[str, Any], frozen_context: dict[str, Any]) -> tuple[list, int] | AgentResult:
+        """
+        Available hotels, best first, and the number rejected. ``run``'s choice comes first:
+        the nearest to the previous hotel when re-planning, else the one picked by the stable hash.
+        The rest follow by distance, or in place-ID order from the hashed pick onwards.
+        """
         city = ri.get("city", "")
         style = ri.get("travel_style", "balanced")
-        currency = currency_of(ri)
-        rooms = math.ceil(travelers_of(ri) / 2)
         try:
-            check_in = date.fromisoformat(str(ri.get("check_in"))[:10])
-            check_out = date.fromisoformat(str(ri.get("check_out"))[:10])
+            date.fromisoformat(str(ri.get("check_in"))[:10])
+            date.fromisoformat(str(ri.get("check_out"))[:10])
         except ValueError:
             return AgentResult.fail("invalid check_in/check_out", retryable=False)
 
@@ -59,12 +77,25 @@ class HotelAgent(BaseAgent):
             places = sorted((pl for pl in places if pl.place_id not in excluded), key=lambda pl: pl.place_id)
             if not places:
                 return AgentResult.fail(f"no available accommodation in {city} after exclusions", retryable=False)
-            previous = frozen_context.get("previous_output") or {}
-            if previous.get("latitude") is not None:
-                anchor = (previous["latitude"], previous["longitude"])
-                hotel = min(places, key=lambda pl: (haversine_km((pl.latitude, pl.longitude), anchor), pl.place_id))
-            else:
-                hotel = places[stable_hash(city, style) % len(places)]
+        except ProviderError as exc:
+            return AgentResult.fail(f"hotel search failed: {exc}")
+        previous = frozen_context.get("previous_output") or {}
+        if previous.get("latitude") is not None:
+            anchor = (previous["latitude"], previous["longitude"])
+            ranked = sorted(places, key=lambda pl: (haversine_km((pl.latitude, pl.longitude), anchor), pl.place_id))
+        else:
+            start = stable_hash(city, style) % len(places)
+            ranked = places[start:] + places[:start]
+        return ranked, len(rejected)
+
+    async def _output(self, ri: dict[str, Any], hotel: Any, candidates: int, rejected: int) -> AgentResult:
+        city = ri.get("city", "")
+        style = ri.get("travel_style", "balanced")
+        currency = currency_of(ri)
+        rooms = math.ceil(travelers_of(ri) / 2)
+        check_in = date.fromisoformat(str(ri.get("check_in"))[:10])
+        check_out = date.fromisoformat(str(ri.get("check_out"))[:10])
+        try:
             quote = await self.p.booking.quote(hotel.place_id, check_in, check_out, rooms, style)
             cost = await self.p.fx.convert(quote.total_usd, "USD", currency)
             per_night = await self.p.fx.convert(quote.nightly_usd, "USD", currency)
@@ -95,6 +126,6 @@ class HotelAgent(BaseAgent):
             "status": "offered",
             "source": hotel.source,
             "booking_source": quote.source,
-            "candidates": len(places),
-            "rejected": len(rejected),
+            "candidates": candidates,
+            "rejected": rejected,
         })

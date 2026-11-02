@@ -1,0 +1,40 @@
+# Stress catalogue (pre-registration, Phase 9): run with the stress option profile
+# (eval/scenario_set_v3.py STRESS_PROFILE: 8 flight offers, 8 hotels, 6 pickup timings), so the
+# option space can exceed the evaluation budget, which is the only setting where a GA could add value.
+#
+# It contains every single disruption level of eval/scenarios/disruptions.yaml (same kinds, targets,
+# facts) plus six combined disruptions: two events that arrive together and are repaired at once.
+# "storm_mid" / "storm_last" resolve per trip as in the realistic catalogue.
+
+include_single: eval/scenarios/disruptions.yaml
+
+combined:
+  - kind: overbooked_and_storm
+    events:
+      - {type: HOTEL_OVERBOOKED, target: hotel_stay, facts: {}}
+      - {type: WEATHER_STORM, target: storm_mid, facts: {condition: thunderstorm}}
+
+  - kind: cancellation_and_hotel_spike
+    events:
+      - {type: FLIGHT_CANCELLATION, target: flight_outbound, facts: {}}
+      - {type: PRICE_SPIKE, target: hotel_stay, facts: {pct: 30}}
+
+  - kind: delay_and_return_cancellation
+    events:
+      - {type: FLIGHT_DELAY, target: flight_outbound, facts: {delay_minutes: 180}}
+      - {type: FLIGHT_CANCELLATION, target: flight_return, facts: {}}
+
+  - kind: overbooked_and_delay
+    events:
+      - {type: HOTEL_OVERBOOKED, target: hotel_stay, facts: {}}
+      - {type: FLIGHT_DELAY, target: flight_outbound, facts: {delay_minutes: 180}}
+
+  - kind: return_cancellation_and_storm
+    events:
+      - {type: FLIGHT_CANCELLATION, target: flight_return, facts: {}}
+      - {type: WEATHER_STORM, target: storm_last, facts: {condition: thunderstorm}}
+
+  - kind: cancellation_and_overbooked
+    events:
+      - {type: FLIGHT_CANCELLATION, target: flight_outbound, facts: {}}
+      - {type: HOTEL_OVERBOOKED, target: hotel_stay, facts: {}}

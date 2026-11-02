@@ -297,6 +297,9 @@ class Orchestrator:
             outcome.actions = self.gate.review_replan(
                 store, ledger, before, outcome.replan.changed if outcome.replan else [],
                 why=event.summary(), event_id=event.event_id)
+        elif ledger is not None and outcome.status == "conflict":
+            outcome.actions = [self.gate.raise_decision(store, ledger, outcome.replan.repair["conflict"],
+                                                        why=event.summary(), event_id=event.event_id)]
         return outcome
 
     # ── Risk Gate decisions ───────────────────────────────────────────────────

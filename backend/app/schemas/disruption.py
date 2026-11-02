@@ -17,7 +17,8 @@ class DisruptionRequest(BaseModel):
     type: DisruptionType | None = None
     target_node: str | None = None
     new_facts: dict[str, Any] = Field(default_factory=dict)
-    strategy: Literal["contract", "full", "naive"] = "contract"
+    strategy: Literal["contract", "full", "naive", "greedy", "exhaustive", "beam", "random", "ga",
+                      "hybrid"] = "contract"
     use_frozen_context: bool = True
     seed: int = 0
     compare_baseline: bool = Field(default=False,
@@ -33,7 +34,7 @@ class DisruptionRequest(BaseModel):
 
 class DisruptionResponse(BaseModel):
     trip_id: str
-    status: Literal["replanned", "no_effect", "duplicate", "invalid"]
+    status: Literal["replanned", "no_effect", "duplicate", "invalid", "conflict"]
     message: str
     event: dict[str, Any]
     broken_edges: list[list[str]] = Field(default_factory=list)

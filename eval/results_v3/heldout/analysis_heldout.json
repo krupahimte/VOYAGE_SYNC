@@ -1,0 +1,984 @@
+{
+  "tests": {
+    "H1": {
+      "compare": "E2@10 vs E1g",
+      "counts": {
+        "equal": 573,
+        "dominates": 77,
+        "incomparable": 61,
+        "dominated": 9
+      },
+      "wins": 77,
+      "losses": 9,
+      "p": 1.341059362753585e-14,
+      "p_holm": 8.04635617652151e-14
+    },
+    "H2": {
+      "compare": "E3 vs RS",
+      "n": 420,
+      "median_diff": 0.0,
+      "mean_diff_ci": {
+        "mean": -7.4e-05,
+        "low": -0.000195,
+        "high": 0.0,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 10000
+      },
+      "rank_biserial": -0.6453,
+      "a_better": 3,
+      "b_better": 14,
+      "ties": 403,
+      "p": 0.0104827880859375,
+      "method": "exact",
+      "zeros": 403,
+      "p_holm": 0.0104827880859375
+    },
+    "H3": {
+      "compare": "E4@10 vs E2@50",
+      "n": 420,
+      "median_diff": 0.0,
+      "mean_diff_ci": {
+        "mean": 0.004186,
+        "low": 0.000687,
+        "high": 0.008395,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 10000
+      },
+      "rank_biserial": 1.0,
+      "a_better": 11,
+      "b_better": 0,
+      "ties": 409,
+      "p": 0.0009765625,
+      "method": "exact",
+      "zeros": 409,
+      "p_holm": 0.001953125
+    },
+    "H4 (E1 vs E2)": {
+      "compare": "E1 vs E2@10",
+      "silent_a": 40,
+      "silent_b": 0,
+      "wins": 40,
+      "losses": 0,
+      "p": 1.8189894035458565e-12,
+      "p_holm": 9.094947017729282e-12
+    },
+    "H4 (E1 vs E3)": {
+      "compare": "E1 vs E3",
+      "silent_a": 40,
+      "silent_b": 0,
+      "wins": 40,
+      "losses": 0,
+      "p": 1.8189894035458565e-12,
+      "p_holm": 9.094947017729282e-12
+    },
+    "H4 (E1 vs E4)": {
+      "compare": "E1 vs E4@10",
+      "silent_a": 40,
+      "silent_b": 0,
+      "wins": 40,
+      "losses": 0,
+      "p": 1.8189894035458565e-12,
+      "p_holm": 9.094947017729282e-12
+    }
+  },
+  "holds": {
+    "H1": true,
+    "H2": false,
+    "H3": true,
+    "H4": true
+  },
+  "ga_justified": false,
+  "secondary": {
+    "H2 (large spaces)": {
+      "compare": "E3 vs RS",
+      "n": 32,
+      "median_diff": 0.0,
+      "mean_diff_ci": {
+        "mean": -0.000615,
+        "low": -0.002316,
+        "high": 0.000277,
+        "trips": 20,
+        "n": 32,
+        "level": 0.95,
+        "resamples": 10000
+      },
+      "rank_biserial": 0.2,
+      "a_better": 3,
+      "b_better": 2,
+      "ties": 27,
+      "p": 0.75,
+      "method": "exact",
+      "zeros": 27
+    },
+    "H3 (large spaces)": {
+      "compare": "E4@10 vs E2@50",
+      "n": 32,
+      "median_diff": 0.0,
+      "mean_diff_ci": {
+        "mean": 0.022034,
+        "low": 0.002896,
+        "high": 0.052343,
+        "trips": 20,
+        "n": 32,
+        "level": 0.95,
+        "resamples": 10000
+      },
+      "rank_biserial": 1.0,
+      "a_better": 6,
+      "b_better": 0,
+      "ties": 26,
+      "p": 0.03125,
+      "method": "exact",
+      "zeros": 26
+    }
+  },
+  "arms": {
+    "realistic|B1": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 0,
+      "silent_failures": 20,
+      "fitness": {
+        "mean": -0.752052,
+        "low": -0.829298,
+        "high": -0.685283,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.421063,
+      "money": 0.080937,
+      "activity_time_lost": 0.01783,
+      "approvals": 0.232222,
+      "plan_evaluations": null
+    },
+    "realistic|B2": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 0,
+      "silent_failures": 20,
+      "fitness": {
+        "mean": -0.261689,
+        "low": -0.316322,
+        "high": -0.217336,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.092136,
+      "money": 0.078448,
+      "activity_time_lost": 0.012216,
+      "approvals": 0.078889,
+      "plan_evaluations": null
+    },
+    "realistic|E1": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 0,
+      "silent_failures": 20,
+      "fitness": {
+        "mean": -0.236937,
+        "low": -0.286145,
+        "high": -0.197524,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.081756,
+      "money": 0.076466,
+      "activity_time_lost": 0.012049,
+      "approvals": 0.066667,
+      "plan_evaluations": null
+    },
+    "realistic|E1g": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.233955,
+        "low": -0.282466,
+        "high": -0.195249,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.078996,
+      "money": 0.07661,
+      "activity_time_lost": 0.011683,
+      "approvals": 0.066667,
+      "plan_evaluations": 1.0
+    },
+    "realistic|E2@10": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.227189,
+        "low": -0.271429,
+        "high": -0.191624,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.081022,
+      "money": 0.067652,
+      "activity_time_lost": 0.011849,
+      "approvals": 0.066667,
+      "plan_evaluations": 4.2
+    },
+    "realistic|E2@50": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.227189,
+        "low": -0.271429,
+        "high": -0.191624,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.081022,
+      "money": 0.067652,
+      "activity_time_lost": 0.011849,
+      "approvals": 0.066667,
+      "plan_evaluations": 6.97
+    },
+    "realistic|E3": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.227189,
+        "low": -0.271429,
+        "high": -0.191624,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.081022,
+      "money": 0.067652,
+      "activity_time_lost": 0.011849,
+      "approvals": 0.066667,
+      "plan_evaluations": 6.04
+    },
+    "realistic|E4@10": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.227189,
+        "low": -0.271429,
+        "high": -0.191624,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.081022,
+      "money": 0.067652,
+      "activity_time_lost": 0.011849,
+      "approvals": 0.066667,
+      "plan_evaluations": 9.99
+    },
+    "realistic|EXH": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.227189,
+        "low": -0.271429,
+        "high": -0.191624,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.081022,
+      "money": 0.067652,
+      "activity_time_lost": 0.011849,
+      "approvals": 0.066667,
+      "plan_evaluations": 6.97
+    },
+    "realistic|RS": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.227189,
+        "low": -0.271429,
+        "high": -0.191624,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.081022,
+      "money": 0.067652,
+      "activity_time_lost": 0.011849,
+      "approvals": 0.066667,
+      "plan_evaluations": 7.04
+    },
+    "stress|B1": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 0,
+      "silent_failures": 20,
+      "fitness": {
+        "mean": -0.9728,
+        "low": -1.02323,
+        "high": -0.926163,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.492893,
+      "money": 0.082008,
+      "activity_time_lost": 0.020121,
+      "approvals": 0.377778,
+      "plan_evaluations": null
+    },
+    "stress|B2": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 0,
+      "silent_failures": 20,
+      "fitness": {
+        "mean": -0.434566,
+        "low": -0.519751,
+        "high": -0.36656,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.126786,
+      "money": 0.120719,
+      "activity_time_lost": 0.012458,
+      "approvals": 0.174603,
+      "plan_evaluations": null
+    },
+    "stress|E1": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 0,
+      "silent_failures": 20,
+      "fitness": {
+        "mean": -0.407066,
+        "low": -0.484438,
+        "high": -0.344991,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.114187,
+      "money": 0.121872,
+      "activity_time_lost": 0.012276,
+      "approvals": 0.15873,
+      "plan_evaluations": null
+    },
+    "stress|E1g": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.400003,
+        "low": -0.475121,
+        "high": -0.338658,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.107341,
+      "money": 0.12218,
+      "activity_time_lost": 0.011753,
+      "approvals": 0.15873,
+      "plan_evaluations": 1.0
+    },
+    "stress|E2@10": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.379055,
+        "low": -0.437099,
+        "high": -0.331434,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.1181,
+      "money": 0.088838,
+      "activity_time_lost": 0.013387,
+      "approvals": 0.15873,
+      "plan_evaluations": 6.75
+    },
+    "stress|E2@50": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.364155,
+        "low": -0.414121,
+        "high": -0.322578,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.116391,
+      "money": 0.076337,
+      "activity_time_lost": 0.012697,
+      "approvals": 0.15873,
+      "plan_evaluations": 23.61
+    },
+    "stress|E3": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.359992,
+        "low": -0.406601,
+        "high": -0.321352,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 9.7e-05,
+      "disruption": 0.117937,
+      "money": 0.07023,
+      "activity_time_lost": 0.013096,
+      "approvals": 0.15873,
+      "plan_evaluations": 29.81
+    },
+    "stress|E4@10": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.359969,
+        "low": -0.406582,
+        "high": -0.321317,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 3e-05,
+      "disruption": 0.117822,
+      "money": 0.070321,
+      "activity_time_lost": 0.013096,
+      "approvals": 0.15873,
+      "plan_evaluations": 32.03
+    },
+    "stress|EXH": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.359906,
+        "low": -0.406582,
+        "high": -0.321317,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.117822,
+      "money": 0.070259,
+      "activity_time_lost": 0.013096,
+      "approvals": 0.15873,
+      "plan_evaluations": 213.91
+    },
+    "stress|RS": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.359918,
+        "low": -0.406609,
+        "high": -0.321327,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 3.8e-05,
+      "disruption": 0.117813,
+      "money": 0.070281,
+      "activity_time_lost": 0.013094,
+      "approvals": 0.15873,
+      "plan_evaluations": 100.31
+    }
+  },
+  "drift_off_arms": {
+    "realistic|B1": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 0,
+      "silent_failures": 20,
+      "fitness": {
+        "mean": -0.237234,
+        "low": -0.28042,
+        "high": -0.202985,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.092561,
+      "money": 0.063441,
+      "activity_time_lost": 0.014565,
+      "approvals": 0.066667,
+      "plan_evaluations": null
+    },
+    "realistic|B2": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 0,
+      "silent_failures": 20,
+      "fitness": {
+        "mean": -0.236295,
+        "low": -0.287359,
+        "high": -0.196149,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.080138,
+      "money": 0.077769,
+      "activity_time_lost": 0.011721,
+      "approvals": 0.066667,
+      "plan_evaluations": null
+    },
+    "realistic|E1": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 0,
+      "silent_failures": 20,
+      "fitness": {
+        "mean": -0.235941,
+        "low": -0.28732,
+        "high": -0.195759,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.07993,
+      "money": 0.07779,
+      "activity_time_lost": 0.011555,
+      "approvals": 0.066667,
+      "plan_evaluations": null
+    },
+    "realistic|E1g": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.232768,
+        "low": -0.283578,
+        "high": -0.192982,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.076979,
+      "money": 0.077933,
+      "activity_time_lost": 0.011188,
+      "approvals": 0.066667,
+      "plan_evaluations": 1.0
+    },
+    "realistic|E2@10": {
+      "scenarios": 320,
+      "feasible": 299,
+      "conflicts": 21,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.224348,
+        "low": -0.268315,
+        "high": -0.189858,
+        "trips": 20,
+        "n": 299,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.079806,
+      "money": 0.066123,
+      "activity_time_lost": 0.011529,
+      "approvals": 0.06689,
+      "plan_evaluations": 4.27
+    },
+    "realistic|E2@50": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.224249,
+        "low": -0.268255,
+        "high": -0.189875,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.080121,
+      "money": 0.065869,
+      "activity_time_lost": 0.011593,
+      "approvals": 0.066667,
+      "plan_evaluations": 7.18
+    },
+    "realistic|E3": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.224249,
+        "low": -0.268255,
+        "high": -0.189875,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.080121,
+      "money": 0.065869,
+      "activity_time_lost": 0.011593,
+      "approvals": 0.066667,
+      "plan_evaluations": 6.19
+    },
+    "realistic|E4@10": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.224249,
+        "low": -0.268255,
+        "high": -0.189875,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.080121,
+      "money": 0.065869,
+      "activity_time_lost": 0.011593,
+      "approvals": 0.066667,
+      "plan_evaluations": 10.24
+    },
+    "realistic|EXH": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.224249,
+        "low": -0.268255,
+        "high": -0.189875,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.080121,
+      "money": 0.065869,
+      "activity_time_lost": 0.011593,
+      "approvals": 0.066667,
+      "plan_evaluations": 7.18
+    },
+    "realistic|RS": {
+      "scenarios": 320,
+      "feasible": 300,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.224249,
+        "low": -0.268255,
+        "high": -0.189875,
+        "trips": 20,
+        "n": 300,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.080121,
+      "money": 0.065869,
+      "activity_time_lost": 0.011593,
+      "approvals": 0.066667,
+      "plan_evaluations": 7.25
+    },
+    "stress|B1": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 0,
+      "silent_failures": 20,
+      "fitness": {
+        "mean": -0.391545,
+        "low": -0.439149,
+        "high": -0.351737,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.142765,
+      "money": 0.071467,
+      "activity_time_lost": 0.018583,
+      "approvals": 0.15873,
+      "plan_evaluations": null
+    },
+    "stress|B2": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 0,
+      "silent_failures": 20,
+      "fitness": {
+        "mean": -0.405835,
+        "low": -0.482335,
+        "high": -0.344639,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.114331,
+      "money": 0.120316,
+      "activity_time_lost": 0.012458,
+      "approvals": 0.15873,
+      "plan_evaluations": null
+    },
+    "stress|E1": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 0,
+      "silent_failures": 20,
+      "fitness": {
+        "mean": -0.405428,
+        "low": -0.481892,
+        "high": -0.344137,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.114074,
+      "money": 0.120348,
+      "activity_time_lost": 0.012276,
+      "approvals": 0.15873,
+      "plan_evaluations": null
+    },
+    "stress|E1g": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.398906,
+        "low": -0.474639,
+        "high": -0.33855,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.107767,
+      "money": 0.120656,
+      "activity_time_lost": 0.011753,
+      "approvals": 0.15873,
+      "plan_evaluations": 1.0
+    },
+    "stress|E2@10": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.383118,
+        "low": -0.444174,
+        "high": -0.333253,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.116488,
+      "money": 0.094849,
+      "activity_time_lost": 0.013052,
+      "approvals": 0.15873,
+      "plan_evaluations": 6.75
+    },
+    "stress|E2@50": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.368268,
+        "low": -0.420567,
+        "high": -0.324434,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.11732,
+      "money": 0.07935,
+      "activity_time_lost": 0.012867,
+      "approvals": 0.15873,
+      "plan_evaluations": 24.74
+    },
+    "stress|E3": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.363629,
+        "low": -0.413237,
+        "high": -0.32323,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 7.2e-05,
+      "disruption": 0.119177,
+      "money": 0.072269,
+      "activity_time_lost": 0.013453,
+      "approvals": 0.15873,
+      "plan_evaluations": 31.48
+    },
+    "stress|E4@10": {
+      "scenarios": 440,
+      "feasible": 419,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.363114,
+        "low": -0.413181,
+        "high": -0.322075,
+        "trips": 20,
+        "n": 419,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.000305,
+      "disruption": 0.118764,
+      "money": 0.072614,
+      "activity_time_lost": 0.013423,
+      "approvals": 0.158313,
+      "plan_evaluations": 33.44
+    },
+    "stress|EXH": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.363589,
+        "low": -0.413184,
+        "high": -0.32319,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 0.0,
+      "disruption": 0.119101,
+      "money": 0.072285,
+      "activity_time_lost": 0.013473,
+      "approvals": 0.15873,
+      "plan_evaluations": 257.88
+    },
+    "stress|RS": {
+      "scenarios": 440,
+      "feasible": 420,
+      "conflicts": 20,
+      "silent_failures": 0,
+      "fitness": {
+        "mean": -0.363594,
+        "low": -0.413197,
+        "high": -0.32319,
+        "trips": 20,
+        "n": 420,
+        "level": 0.95,
+        "resamples": 2000
+      },
+      "fitness_seed_sd_mean": 1.2e-05,
+      "disruption": 0.1191,
+      "money": 0.072291,
+      "activity_time_lost": 0.013473,
+      "approvals": 0.15873,
+      "plan_evaluations": 107.17
+    }
+  },
+  "large_space_scenarios": 32
+}

@@ -1,0 +1,5 @@
+  heldout/realistic: 20/80 scenarios (492 s)
+  heldout/realistic: 40/80 scenarios (898 s)
+  heldout/realistic: 60/80 scenarios (1791 s)
+  heldout/realistic: 80/80 scenarios (2148 s)
+wrote eval\results_v3\heldout\main\realistic_off_g3 (5280 runs)

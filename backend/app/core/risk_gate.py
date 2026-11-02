@@ -60,6 +60,7 @@ class ActionKind(str, Enum):
     CHANGE = "change"
     CANCEL = "cancel"
     PAY = "pay"
+    DECIDE = "decide"      # a repair conflict: the user chooses (always T2, spends nothing itself)
 
 
 class ActionStatus(str, Enum):
@@ -81,6 +82,7 @@ IRREVERSIBILITY = {
     ActionKind.SEARCH: 0.0, ActionKind.COMPARE: 0.0, ActionKind.NOTIFY: 0.0, ActionKind.DRAFT: 0.05,
     ActionKind.REORDER: 0.15, ActionKind.RESCHEDULE: 0.2,
     ActionKind.BOOK: 0.6, ActionKind.CHANGE: 0.8, ActionKind.CANCEL: 1.0, ActionKind.PAY: 1.0,
+    ActionKind.DECIDE: 0.0,     # the decision itself changes nothing; T2 comes from its own hard rule
 }
 VISIBILITY = {
     NodeType.FLIGHT: 1.0, NodeType.STAY: 1.0, NodeType.TRANSFER: 0.6,
@@ -185,6 +187,8 @@ def classify(action: Action, policy: RiskPolicy) -> tuple[RiskTier, float, list[
         reasons.append(f"{action.kind.value} is always T2")
     elif action.kind in (ActionKind.BOOK, ActionKind.CHANGE):
         reasons.append(f"{action.kind.value} commits to a booking: always T2")
+    elif action.kind == ActionKind.DECIDE:
+        reasons.append("no repair meets every hard constraint: the user decides (always T2)")
     if action.amount > 0:
         reasons.append(f"spends money ({action.amount:.2f} {action.currency}); money is never spent in T0/T1")
     if action.amount > policy.spend_threshold:
@@ -537,6 +541,8 @@ class RiskGate:
     async def _execute(self, store: GraphStore, ledger: ActionLedger, action_id: str, executor: Executor | None,
                        *, decision: str, decided_by: str) -> Action:
         action = self._open(ledger, action_id)
+        if action.kind == ActionKind.DECIDE:
+            return self._accept_best_effort(store, ledger, action, decision=decision, decided_by=decided_by)
         node = store.get_node(action.node_id)
         stale = self._still_current(action, node)
         if stale:
@@ -573,6 +579,8 @@ class RiskGate:
         node = store.get_node(action.node_id)
         action.decision, action.decided_by, action.decided_at = "rejected", decided_by, _now()
         action.status = ActionStatus.REJECTED
+        if action.kind == ActionKind.DECIDE:
+            return action                      # keep the plan as it is: a conflict never touched it
         if self._still_current(action, node):
             return action                      # node already moved on; nothing to restore
         if node.type in BOOKABLE:
@@ -581,6 +589,51 @@ class RiskGate:
             output = copy.deepcopy((action.undo or {}).get("previous_output")) or node.output
         store.update_node_status(node.id, NodeStatus.DONE, output=output,
                                  reason=f"risk gate: {action.kind.value} rejected ({action_id})")
+        return action
+
+    # ── repair conflicts (paper §V: report the conflict, the user decides) ─────
+
+    def raise_decision(self, store: GraphStore, ledger: ActionLedger, conflict: dict[str, Any], *,
+                       why: str = "", event_id: str = "") -> Action:
+        """
+        A T2 card for a repair conflict. Unlike a booking card it marks no task: the plan
+        stays as it is until the user decides. Approving applies the best-effort plan shown
+        (``conflict['best_effort']``, violations listed); rejecting keeps the current plan.
+        """
+        node = store.get_node(conflict["target"])
+        offer = conflict.get("best_effort") or {}
+        action = Action(trip_id=ledger.trip_id, node_id=node.id, node_type=node.type, kind=ActionKind.DECIDE,
+                        title=f"No repair meets every constraint: {why or node.id}",
+                        why=f"{conflict.get('reason', 'no feasible plan')}. "
+                            + (f"Best available plan violates: {'; '.join(offer.get('violations', []))}"
+                               if offer else "No alternative plan could be built."),
+                        event_id=event_id, option=conflict, confidence=1.0,
+                        changes=[{"field": nid, "reason": reason} for nid, reason in offer.get("region", {}).items()])
+        self.classify(action)
+        action.status = ActionStatus.PENDING
+        action.remind_at = _now() + timedelta(minutes=self.policy.remind_after_minutes)
+        ledger.add(action)
+        return action
+
+    def _accept_best_effort(self, store: GraphStore, ledger: ActionLedger, action: Action, *,
+                            decision: str, decided_by: str) -> Action:
+        """Commit the conflict's best-effort plan (accepting its violations), then review its changes."""
+        from app.core.repair.commit import accept_best_effort
+
+        if not action.option.get("best_effort"):
+            raise GateConflict(f"{action.action_id} has no plan to accept; reject it to keep the current plan")
+        before = {n.id: copy.deepcopy(n.output) for n in store.list_nodes()}
+        try:
+            changed, accepted = accept_best_effort(store, action.option, action_id=action.action_id)
+        except ValueError as exc:
+            self._supersede(action, str(exc))
+            raise GateConflict(f"{action.action_id} was superseded: {exc}") from exc
+        action.decision, action.decided_by, action.decided_at = decision, decided_by, _now()
+        action.status, action.executed_at, action.last_error = ActionStatus.EXECUTED, _now(), ""
+        follow_up = self.review_replan(store, ledger, before, changed,
+                                       why=f"accepted best-effort plan ({action.action_id})", event_id=action.event_id)
+        action.result = {"committed": changed, "violations_accepted": accepted,
+                         "follow_up_actions": [a.action_id for a in follow_up]}
         return action
 
     def undo(self, store: GraphStore, ledger: ActionLedger, action_id: str) -> Action:

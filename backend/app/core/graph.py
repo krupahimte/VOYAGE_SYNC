@@ -133,6 +133,15 @@ class GraphStore:
         self._nodes[node_id] = updated
         return updated
 
+    def restore_from(self, other: "GraphStore") -> None:
+        """
+        Take over *other*'s nodes, edges and history. Used to commit a repair atomically:
+        the repair is applied and validated on a copy, then the copy replaces this graph.
+        """
+        if other.graph_id != self.graph_id:
+            raise GraphError(f"Cannot restore graph '{self.graph_id}' from '{other.graph_id}'.")
+        self._nodes, self._edges, self._history = other._nodes, other._edges, other._history
+
     def list_nodes(self) -> list[TaskNode]:
         """Return all nodes in insertion order."""
         return list(self._nodes.values())

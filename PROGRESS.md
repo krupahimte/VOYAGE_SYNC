@@ -429,6 +429,560 @@ were verified unchanged by checksum.
   - B2 and B1 re-search and, under drift, sometimes come back cheaper (6 runs, listed in the report).
 - **TPR is reported to 2 decimals,** so 99.95 % is not shown as 100 %.
 
+## Hybrid (BFS + beam search + GA), Phase 0 — Baseline freeze ✅ (2026-11-01)
+
+**Tests:** 386 passed, 0 failed (378 before + 8 in `test_baseline_freeze.py`). No application code changed.
+
+The hybrid work follows the reviewed plan (review decisions R1–R12, accepted 2026-11-01). Phase 0 fixes what must
+not move before any agent is refactored.
+
+### What was built
+- `eval/golden.py` → `eval/golden/e1_snapshot.json`: **E1 golden snapshot**. Covers the 10 planned trips and
+  160 scenarios × drift on/off, as the benchmark's "ours" runs them (handle the disruption, then the simulated user
+  approves). For each run it records:
+  - the oracle set;
+  - the stale, regenerated, changed and failed lists;
+  - the Risk Gate actions;
+  - every node's status and a hash of its output.
+  - Only `booking_ref`, `booked_at` and `approval_id` are left out. Two runs in separate processes differ in these
+    fields alone (random or wall-clock); with them excluded, the runs are identical.
+  - A deliberate change to the flight ranker gives over 1,000 differences, so the check is sensitive.
+- `eval/manifest.py` → `eval/baseline_manifest.json`: sha256 of the 19 protected files (`eval/results/`,
+  `eval/results_v2/`, `eval/RESULTS.md`, `eval/scenarios/`). Text is hashed with LF endings (`core.autocrlf` is on).
+  It was recorded from the committed state (no diff against HEAD). New v3 scenario files go in `eval/scenarios_v3/`,
+  so the check stays strict.
+- `eval/preregistration.yaml`: **draft**. Covers:
+  - claims H1–H4 and when the GA counts as justified;
+  - the arms (E1, E1g, E2, E3, E4, RS, EXH) and the primary metric;
+  - the ground-truth definition;
+  - the objective, hard constraints, evaluation budget, parameter grids, seed rule, trip-level split and statistics.
+  - It is frozen, with its hash, before the held-out run.
+- `run_benchmark.py` already had `--out`, so the audit's "no `--out` option" was wrong; nothing to add.
+
+## Hybrid, Phase 1 — Candidate generation ✅ (2026-11-01)
+
+**Tests:** 448 passed, 0 failed (386 before + 62 in `test_candidates.py`). The E1 golden snapshot is unchanged. A full
+benchmark run into a scratch folder matches `eval/results/results*.csv` on every column except `latency_ms`, for
+all 1,920 rows and all 6 strategies, LLM and API call counts included.
+
+### What was built
+- `BaseAgent.candidates(node, resolved_inputs, frozen_context, k)` (additive):
+  - returns up to k outputs, best first, in a fixed order;
+  - option 0 is what `run` returns;
+  - the default is `[run()]`, used for weather (facts) and the budget (derived).
+- `distinct(results, k)` drops repeated outputs and failed options. If every option fails, the first failure is
+  returned.
+- Each agent was split into "find and rank" and "build the output". `run` builds the top-ranked option, so its
+  provider calls are unchanged:
+
+  | Agent | Options | Extra provider calls |
+  |---|---|---|
+  | Flight | the valid offers, in `_ranker` order (a stable sort, so option 0 is `min`'s pick) | none |
+  | Hotel | today's pick first (nearest to the previous hotel, else the stable-hash pick), then by distance or in place-ID order from that pick | one booking quote per option |
+  | Transfer | the same route at other pickup timings: offset after arrival 30 (the node's own), then 15/45/60 min; airport buffer before departure 180, then 150/210/240 min. All inside the `TRANSFER_AFTER_FLIGHT` and `TRANSFER_BEFORE_DEPARTURE` windows. | none (one route lookup) |
+  | Day plan | the picker seed shifted by 0–5 from one places search, with duplicates dropped. Kept activities stay kept in every variant. | none |
+- **No LLM calls while generating options.**
+  - Day-plan options carry `pending_descriptions` (indexes of the new activities) and `descriptions_source:
+    "pending"`.
+  - `DayPlanAgent.complete_descriptions` writes the descriptions (one LLM call) for the option that is committed.
+  - `run` is that plus variant 0, so its output is unchanged.
+  - One difference: a day plan that fails output validation no longer makes the description call first. No day
+    plan failed validation in any benchmark run, so the counts did not change.
+
+### Effective number of options (10 trips, k = 3 flight/hotel/day plan, 4 transfer)
+- At planning time: every node reaches k (flights 3, hotels 3, transfers 4, day plans 3).
+- With the frozen context of an *undisrupted* plan, day plans have exactly 1 option, because every activity is
+  still feasible and is kept. Day-plan variants appear only where a disruption forces slots to be refilled.
+- The effective k under real disruptions is measured in Phase 3. It bounds the candidate space, and with it
+  whether a GA can be justified.
+
+## Hybrid, Phase 2 — View, validator and objective ✅ (2026-11-01)
+
+**Tests:** 477 passed, 0 failed (448 before + 29 in `test_repair_constraints.py`). No existing module changed, and the
+E1 golden snapshot and the manifest are unchanged.
+
+### What was built (`app/core/repair/`, new package; the Replanner does not use it)
+- `view.py`, `GraphView`: a read-only overlay of candidate outputs on a `GraphStore`.
+  - It answers `get_node`, `list_nodes`, `list_edges` and `validate` like the store. `Scheduler._resolve_inputs`,
+    `check_edge` and the metrics therefore work on it unchanged.
+  - `with_output` returns a new view; a test checks the store's `to_dict()` is unchanged afterwards.
+- `constraints.py`, `validate_plan(graph, reference, region, goal)` returns a `ValidationReport` with seven checks
+  (R6):
+  - every contract holds and could be evaluated (`check_edge` + `contract_evaluable`);
+  - repaired outputs pass their schemas (`validate_output`);
+  - every task outside the region is exactly equal to the reference;
+  - dates and party size are met (`user_requirements`); the budget stays soft;
+  - excluded offers and hotels are not reused;
+  - no repaired day plan is empty, unless it is day 1 and the arrival leaves no start time that day;
+  - the graph is still acyclic.
+- `objective.py`, the four terms on fixed scales, written into `eval/preregistration.yaml` (`objective.scales`)
+  before any dev run:
+  - **disruption**: mean per-task change over the user-visible tasks except the disrupted one (pickup shift / 180
+    min; the share of a day's activities not kept; 1 for another flight or hotel);
+  - **money**: Δcost / budget, plus the new overrun / budget again;
+  - **activity time lost**: per-day losses, not offset by gains on other days, ÷ planned minutes;
+  - **approvals**: booked items whose offer changed ÷ bookable items.
+  - `fitness = −Σ w·term` with equal weights. `deb_key` orders plans feasible first, then by fewer violations,
+    then by higher fitness.
+
+### Checked against E1 (every scenario, drift off)
+- The validator's contract failures equal `check_graph_contracts` on all 160 repaired plans.
+- **No task outside E1's stale set changed in any scenario**, so the frozen check matches what E1 does.
+- Exactly the 10 ten-hour-delay scenarios are infeasible, on contracts only. These become conflicts for E2–E4 in
+  Phase 4.
+- **The empty-day rule needed a correction.** My first version flagged `jaipur…outbound_delay_480`: drop-off at
+  22:55, so the earliest start is 23:55. The agent rounds that up to the next quarter hour (00:00, the next day), so
+  the day truly has no start time left. The rule now mirrors that rounding, and the pre-registration states it.
+
+## Hybrid, Phase 3 — Repair search: greedy (E1g), exhaustive (EXH) and atomic commit ✅ (2026-11-01)
+
+**Tests:** 496 passed, 0 failed (477 before + 19 in `test_repair_search.py`). The E1 golden snapshot and the manifest are
+unchanged.
+
+### What was built
+- `app/core/repair/search.py`:
+  - `RepairSearch` runs E1's contract-pruned BFS inside every branch:
+    - tasks are taken in longest-path depth order;
+    - a broken incoming contract prunes an option;
+    - a changed output whose outgoing contract to a frozen child breaks adds that child to the region.
+  - The disrupted task under a facts event is fixed (R7). The budget is an ordinary region task with one option, so
+    money is exact.
+  - Agents get E1's frozen context: their previous output plus the neighbours that were not stale when their depth
+    level began.
+  - `OptionGenerator` caches options by (task, k, resolved inputs, frozen context). An agent exception counts as "no
+    options", never a crash.
+  - `EvalBudget` counts plan evaluations (the budget), partial evaluations, option generations and cache hits. A
+    wall-clock timeout is only a safety net and is flagged when hit.
+  - Policies:
+    - `rank`: the first surviving option, used to check parity with E1;
+    - `greedy` (E1g): the best partial fitness, ties to the lower rank;
+    - `exhaustive` (EXH): every combination, ranked by `deb_key`, up to `max_exhaustive`.
+- `app/core/repair/commit.py`:
+  - the plan is written to a deep copy; day plans get their descriptions; facts are kept or dropped as in E1's
+    `_reapply_facts`;
+  - the copy is re-validated, then replaces the store (`GraphStore.restore_from`, a new additive method). Any failure
+    leaves the store untouched.
+- Wiring:
+  - `Strategy.GREEDY` / `Strategy.EXHAUSTIVE` in the Replanner, dispatched to `_repair`. `ReplanResult.repair` is a
+    new optional summary field. `Replanner(repair_params=…)` is optional.
+  - The monitor's no-effect shortcut also applies to these strategies.
+  - The API accepts `strategy: greedy | exhaustive`.
+  - With no feasible plan, nothing is committed and `replan.repair.feasible` is false. The status stays `replanned`
+    until Phase 4 adds conflicts.
+
+### Checks
+- **Parity with E1.** The `rank` policy reproduces E1 on every scenario, drift on and off:
+  - the same region and byte-identical outputs, descriptions included, on all 260 repairable runs;
+  - the same 40 no-effect runs;
+  - the 20 ten-hour-delay runs give "no feasible plan" instead of a committed broken plan.
+- **Exhaustive vs. the others** (drift off, 140 scenarios with an effect): no policy ever beats exhaustive, and all
+  three are feasible on the same 130.
+
+### Search-space measurements (drift off, k = 3/3/4/3)
+
+| Kind | n | complete plans mean / max | greedy = optimum | rank (E1) = optimum |
+|---|---|---|---|---|
+| outbound delay | 50 (10 infeasible) | 5.4 / 12 | 39 / 40 | 19 / 40 |
+| return delay | 10 | 4 / 4 | 10 | 10 |
+| outbound cancellation | 10 | 8.2 / 13 | 8 | 8 |
+| return cancellation | 10 | 8 / 8 | 4 | 0 |
+| hotel overbooked | 10 | 48 / 48 | 5 | 5 |
+| storm (mid / last day) | 20 | 2.0–2.4 / 3 | 20 | 20 |
+| price spikes | 30 | 1 / 1 | 30 | 30 |
+
+- **The realistic option space is tiny.** At most 48 complete plans; the exhaustive search takes at most 0.06 s and
+  85 option generations. Day plans add almost nothing: with frozen context they keep their activities, so they
+  have 1 option.
+- **There is real headroom over greedy.** E1g misses the optimum in 14 of 130 feasible scenarios (mean gap 0.008,
+  max 0.32 fitness). E1's own ranking misses it more often (outbound delays, return cancellations).
+- **Implication for the paper, as pre-registered.** With at most 48 plans, a beam search or plain enumeration
+  reaches the optimum cheaply. A GA cannot be justified on the realistic set: S ≤ P·G holds on every scenario. Only
+  the stress set (Phase 9: more offers, combined disruptions) can test H2 and H3.
+- **Unexplained one-off.** One API test run took 329 s; three re-runs took 1.3–1.7 s, and a single request takes
+  0.12 s. Not reproduced, no cause found.
+
+## Hybrid, Phase 4 — Conflicts, the DECIDE action and the validation flag ✅ (2026-11-01)
+
+**Tests:** 517 passed, 0 failed (496 before + 21 in `test_conflicts.py`). The E1 golden snapshot and the manifest are
+unchanged. A fresh legacy benchmark run matches `eval/results/*.csv` on every column except `latency_ms`, all 1,920
+rows.
+
+### What was built
+- **Conflicts.** A search strategy that cannot commit a feasible plan gets `status: "conflict"`, commits nothing, and
+  attaches a conflict report in `replan.repair.conflict`. This covers both "no feasible plan" and a failed commit.
+  The report contains:
+  - the reason;
+  - the violations;
+  - a **best-effort plan**: `search.best_effort`, E1's behaviour made explicit. It never prunes and takes the option
+    with the fewest broken incoming contracts, so every violation is named. Its region outputs come with
+    descriptions already written;
+  - the options `accept_best_effort` (approve) and `keep_current` (reject);
+  - a digest of every task's output.
+- **`ActionKind.DECIDE`**, T2 by its own rule. It is not in `ALWAYS_T2` / `SPEND_KINDS` and spends nothing.
+  - `RiskGate.raise_decision` adds the card *without marking any task*. A booking card's AWAITING_APPROVAL stamp
+    would have overwritten a booked, delayed flight.
+  - Approving runs `commit.accept_best_effort`, which refuses unless:
+    - the graph's digest is unchanged since the conflict, and
+    - the written plan violates *exactly* the violations the user was shown.
+    It then runs `review_replan` for follow-up booking cards and records `violations_accepted`.
+  - A changed graph supersedes the card (409 through the API). Rejecting keeps the plan.
+  - The "no Risk Gate" ablation auto-accepts the card, and `unsafe_actions` counts that as unsafe.
+- **Validation flag on every replan.** `ReplanResult.validation` holds the seven hard checks on what the replan left,
+  plus `silent_failure`: something was regenerated, the plan is infeasible, and no conflict was raised. Statuses
+  are unchanged (R12). Monitor latency now also covers this validation, which matches the paper's definition ("to
+  validation of the revised itinerary"). Latency is excluded from parity.
+- **Wiring.** The Orchestrator raises the DECIDE card on a conflict. The API saves the graph and ledger on a conflict
+  too (the event itself is real). `DisruptionResponse.status` accepts `conflict`. The frontend does not yet know the
+  `conflict` status or the DECIDE card (P3 UI phase).
+- **Refactor (additive):** `commit.write_plan` is shared by a normal commit and an accepted best-effort plan.
+  `RepairSearch.choose(..., relaxed=)`, `_expand(..., relaxed=)` and `skip` were added for best effort.
+
+### Checks
+- All 10 ten-hour-delay scenarios, under greedy and exhaustive, give a `conflict`:
+  - nothing is committed (every output equals the graph after the event) and no task is marked;
+  - exactly one pending T2 DECIDE card, whose violations name `FLIGHT_BEFORE_CHECKIN`.
+- **E1 on the same scenarios stays `replanned`, with `silent_failure: true`.** That is 10 of 160 per drift setting:
+  the measurable difference H4 pre-registered.
+- Accepting the best-effort plan commits exactly E1's region and outputs, booking stamps included. So "best effort"
+  is E1's plan, now explicitly chosen by the user instead of silently applied.
+- API round trip, approve and reject: the decision is made on the graph reloaded from SQLite (the digest survives
+  the round trip), the accepted plan still reports the broken cutoff, and the conflict appears in the disruption
+  history.
+
+## Hybrid, Phase 5 — Ground truth v3 and the labelling protocol ✅ (2026-11-01)
+
+**Tests:** 531 passed, 0 failed (517 before + 14 in `test_ground_truth.py`). No application code changed. The E1
+golden snapshot and the manifest are unchanged.
+
+### What was built
+- `eval/ground_truth.py` → `eval/scenarios_v3/ground_truth.yaml` (sha256 in `ground_truth.sha256` and in the
+  pre-registration). It is computed before any E2–E4 code exists.
+  - **How:** for every scenario × drift setting, the exhaustive search enumerates every complete repair in the option
+    space and keeps those that pass the hard constraints. It starts from the same booked trip as the benchmark and
+    uses the same drift seed.
+  - **Necessity set:** the intersection of their repair regions.
+  - **Min scope:** the smallest region; all minimal regions are recorded, and the union is kept for reference.
+  - **Conflicts:** `feasible: false`, with the necessity set and min scope null.
+  - The legacy oracle's set A is stored beside it.
+  - The file records the option space (k, pickup timings, day-plan variants) and the sha256 of the 21 source files
+    that define it.
+  - `load_verified` refuses a file whose hash changed, or whose option-space sources changed.
+  - `--rehash` re-stamps the source hashes only if a full recompute reproduces the stored ground truth exactly
+    (needed when Phase 6 edits `search.py`); the new sha must be recorded as a deviation.
+  - A test checks that the pre-registration's recorded sha matches the file.
+- Scope metrics (pre-registered secondary metrics): `necessity_coverage` (|R∩N|/|N|), `excess_scope`
+  (|R| − min scope) and `scope_optimality` (min scope / |R|). Each is None when undefined, never 0 or 1.
+- Team labelling (R2): `eval/labels_v3.py` and `eval/scenarios_v3/labels/`:
+  - `LABELLING_PROTOCOL.md`: two blind annotators, the exact question, the acceptability rules, adjudication, and
+    "mismatches are reported, never tuned away";
+  - `briefs.md`: each trip *before* the disruption, its dependencies and the alternatives; a test checks it contains
+    no ground-truth fields;
+  - a blank `annotator_template.csv` with 48 scenarios / 495 rows (weather and the delayed flight are not asked);
+  - `agree` (Cohen's κ and the disagreements) and `compare` (adjudicated labels vs the necessity set).
+  - **The labels themselves are for the team to produce. None exist yet.**
+
+### Findings
+- The ground truth is reproducible: a recompute in a fresh process is identical. It is the same with drift on and
+  off in every scenario.
+- At most 48 feasible repairs per scenario, mean 6.5.
+- The 10 conflicts are exactly the ten-hour delays.
+- **The legacy oracle's policy bias, measured:**
+  - A equals the necessity set in 147 of the 150 feasible scenarios.
+  - In the other 3 (`outbound_delay_180` on Santorini, Goa and Lisbon), A also contains `day_1_plan` and
+    `budget_check`. E1's fixed 30-min pickup forces those two, but a 15-min pickup keeps both valid.
+  - So the bias the review predicted is real but small on this benchmark.
+  - The necessity set is defined over a larger option space than E1 uses. That is intended, and stated as a
+    limitation.
+
+## Hybrid, Phase 6 — Beam search (E2) and random search (RS) ✅ (2026-11-01)
+
+**Tests:** 549 passed, 0 failed (531 before + 18 in `test_beam_random.py`). The E1 golden snapshot, the manifest
+and the v3 ground truth all still verify. `search.py` was not edited, so the option-space hashes are unchanged and
+no rehash was needed.
+
+### What was built (`app/core/repair/policies.py`, new)
+- **`beam(search, width)` (E2).**
+  - Each state in the beam takes its next region task in depth order and branches over that task's surviving
+    options.
+  - The best `width` children by partial fitness are kept, ties broken by the choices made, so the search is
+    deterministic.
+  - Complete states are validated and scored as they appear.
+  - It uses `RepairSearch`'s steps unchanged, so the pruning, frozen tasks and region rule are E1g's and EXH's.
+  - It is named beam search, not ToT: no LLM is involved.
+- **`decode(search, pick)`.** The GA's repair decoder, built now so random search shares it exactly: the first
+  option at or after the picked index (wrapping) that survives the contract checks; None at a dead end.
+- **`random_search(search, seed)` (RS).**
+  - Random repairs through the decoder, until the budget is spent.
+  - Each distinct repair costs one evaluation; a dead-end draw costs one too.
+  - It stops early after 200 draws in a row that found nothing new, or after budget × 20 draws, and records which
+    rule stopped it.
+- **`PolicyParams(beam_width=5, seed=0, max_draw_factor=20, max_stall_draws=200)`.**
+  - Passed through `repair(..., policy_params=)` and `Replanner(policy_params=)`.
+  - `Strategy.BEAM` / `Strategy.RANDOM` are added; the API accepts `beam` and `random`.
+  - Conflicts work as in Phase 4.
+- **Pre-registration.**
+  - It now records the beam ranking and RS's decoder and stopping rule.
+  - It states what the budget counts: complete repairs, plus dead-end draws for RS/GA.
+  - It lists what is reported alongside: beam's partial evaluations, option generations, cache hits and API calls.
+    So beam's extra work is visible rather than hidden by the unit.
+
+### Invariants checked (every scenario with an effect, drift off)
+- Beam of width 1 = E1g (same best plan, fitness and choices).
+- Unbounded beam = exhaustive (the same set of complete plans and the same optimum).
+- Widths 1, 3, 5 and 10 never beat exhaustive, and agree with it on feasibility.
+- The decoder at index 0 equals the `rank` policy (first surviving option).
+- RS: the same seed gives the same plans and different seeds give different ones; plans are unique; the budget is
+  never exceeded; it never beats exhaustive.
+  - With budget 500 it finds all 48 plans of a hotel-overbooked space.
+  - On a conflict scenario it spends the budget on dead ends.
+
+### Not measured, on purpose
+- **How well each beam width or RS performs is not measured here.** Picking a width from these scenarios would be
+  tuning on data that may become held-out (R9: tune on dev only).
+- **Protocol risk for Phase 9.** Phase 3 already reported greedy-vs-exhaustive numbers on all 160 current scenarios.
+  To keep held-out results unseen, the held-out set should consist of the **new** trip templates only, and the 10
+  existing trips should go to dev. This must be decided before the split is frozen.
+
+### Fixed during this phase
+- Random search first drew until budget × 20 draws even after covering a small space: 25 s for one 48-plan
+  scenario, hours for the full experiment. The stall rule (200 draws in a row with nothing new) brought it to well
+  under a second, and the 48-plan space is still fully covered.
+
+## Hybrid, Phase 7 — Genetic algorithm (E3) and the hybrid (E4) ✅ (2026-11-01)
+
+**Tests:** 594 passed, 0 failed (549 before + 45 in `test_ga_hybrid.py`). The E1 golden snapshot, the manifest and the
+v3 ground truth all still verify; `search.py` is untouched.
+
+### What was built (`app/core/repair/policies.py`)
+- **`ga(search, GAParams, seed, seeds)` (E3).**
+  - **Chromosome:** one option rank per task the disruption can reach (the target if it is re-planned, plus its
+    descendants).
+  - **Decoding:** the shared repair decoder. Genes outside the decoded region have no effect.
+  - **Selection:** a tournament (3) on the Deb key; dead ends rank last.
+  - **Variation:** uniform crossover (0.8) and per-gene mutation (1/L).
+  - **Elitism (2):** the best distinct chromosomes survive unchanged, so the best key never gets worse.
+  - **First population:** option 0 everywhere (E1's choices), any seeds, then random chromosomes.
+  - **Stopping:** the generation limit (budget ÷ population), 10 generations with no improvement, or the budget.
+  - A `GATrace` records, per generation, the best key, the feasible share, the mean feasible fitness and the
+    evaluations used, plus the stopping reason. It is returned in `replan.repair.ga_trace`.
+- **`hybrid(search, width, GAParams, seed)` (E4).** Beam search, then the GA seeded with up to population/3 of the
+  beam's best feasible plans (`encode`). Both stages share **one** budget, and the result is the best plan either
+  found.
+- **`_Evaluator`, shared by RS, the GA and the hybrid.** A distinct repair is validated and scored once; a distinct
+  dead end (keyed by its decoding path) is charged once; repeats are free.
+  - This changes RS from one charge per dead-end draw.
+  - The Phase 6 test was updated deliberately, and the rule is in the pre-registration.
+  - `decode` now also returns that path.
+- **Wiring:** `Strategy.GA` and `Strategy.HYBRID`; the API accepts `ga` and `hybrid`; `PolicyParams.ga` holds the GA
+  settings. The full design is in the pre-registration (`parameters.ga`, `parameters.hybrid`).
+
+### Invariants checked
+On one scenario of each disruption kind, at its most severe level, on Santorini and Tokyo (18 scenarios, including
+the ten-hour-delay conflict), seeds 0 and 1:
+- The budget is never exceeded, for the hybrid's beam and GA together too.
+- The best key never gets worse across generations.
+- The GA is feasible exactly when exhaustive is, never beats exhaustive, and never does worse than E1's rank policy.
+- Plans are unique.
+- The hybrid never does worse than its own beam, never beats exhaustive, and seeds at least one plan when the beam
+  found any.
+- The same seed gives an identical run (plans and trace), and different seeds give different runs.
+- `encode` → `decode` reproduces every one of the 48 exhaustive plans of a hotel-overbooked space, and every beam
+  seed.
+
+### Not measured, on purpose
+- **Whether the GA adds value (H2, H3) is not measured here.** That is the pre-registered experiment.
+- Phase 3 already suggests the realistic space is too small for a GA to matter. The stress set (Phase 9) is where it
+  can be tested.
+
+### Fixed during this phase
+- The test sample first picked the "most severe" level by comparing facts as strings (a 90-min delay beat a 600-min
+  one). It now compares the numbers, and the conflict scenario is in the sample.
+
+## Hybrid, Phase 8 — Decision log and API ✅ (2026-11-01)
+
+**Tests:** 607 passed, 0 failed (594 before + 13 in `test_decision_log.py`). The E1 golden snapshot, the manifest and
+the v3 ground truth all still verify.
+
+### What was built
+- **`app/core/repair/decision.py`.**
+  - `search_log` is built by every search strategy right after the search runs. It records:
+    - the affected tasks, each with the contract that made it stale;
+    - the alternatives: complete and feasible plan counts, the 10 best plans with their choices, terms, fitness and
+      violations, and pruned branches;
+    - **every option of every task on the chosen path**, with its label, whether it was chosen, and the broken
+      contract if it was rejected. These are read from the option cache: a test checks that no agent is called again;
+    - the selected plan and the search budget.
+  - `decision_log` assembles the full log when it is read. It combines the disruption record (written once, never
+    updated) with the Risk Gate actions raised for that event, with their *current* decisions.
+  - It covers the paper's §VIII fields for **every** strategy: the disruption, affected tasks, alternatives, selected
+    repair, validation, approvals, plus any conflict and the costs. E1, B1 and B2 say that no alternatives were
+    compared.
+- **Per-stage cost.** `repair()` meters wall-clock time, LLM calls and provider calls per stage: `search`, then
+  `commit` or `conflict`. This shows that the search makes no LLM calls; the committed day plan's descriptions are
+  the only ones.
+- **API:** `GET /trips/{id}/disruptions/{event_id}/decision` (404 for an unknown event).
+- **Deviation from the Phase 8 plan:** no separate `ReplanDecisionRecord` table. The disruption record is already the
+  append-only trace and every gate action carries its `event_id`. A second copy could drift out of sync, so the log
+  is assembled from those two instead. `Action.decision_id` was not needed either.
+
+### Pre-existing bug found and fixed
+- **Every disruption of a trip had the same event ID.** The endpoint builds a fresh `DisruptionSimulator(seed=0)` per
+  request, and a fresh simulator repeats its IDs.
+- The consequence: Risk Gate actions from different disruptions shared one `event_id`, so "the actions of this
+  disruption" was ambiguous. This was the case before Phase 8 too.
+- The endpoint now appends the trip's disruption count (`evt_sim_0_…-2`), which is still deterministic. No test
+  depended on the old IDs, and the benchmark does not use this path.
+
+### Checks
+- On four disruption kinds (exhaustive search): exactly one chosen option per task, with no rejection reason; the
+  selected plan is the first considered one; every affected task has a reason.
+- Stages: a feasible repair has `search` (0 LLM calls) and `commit` (≥ 1, the descriptions). A conflict has `search`
+  and `conflict`.
+- All seven strategies (contract, full, naive, greedy, beam, ga, hybrid) produce the paper's fields; only the
+  search strategies have compared alternatives.
+- API: repair → conflict → approval of the DECIDE card. The log shows the card `pending`, then `executed` /
+  `approved` with who decided. The two disruptions have different IDs, and the E1 log lists its three affected
+  tasks.
+
+## Hybrid, Phase 9 — Scenario sets, stress profile, harness, dev runs and the freeze
+
+### Team decisions (2026-11-01, recorded under `deviations`)
+- **Split:** dev = the 10 existing templates, which were already explored in Phases 3 and 5. Held-out = 20 **new**
+  templates (`eval/scenarios_v3/trips_heldout.yaml`), never run by any strategy before the freeze. This replaces the
+  pre-registered stratified 9/21.
+- **Stress set:** a larger option space plus combined two-event disruptions, because the realistic space (≤ 48
+  plans) is below the 500-evaluation budget.
+
+### What was built
+- `eval/scenario_set_v3.py`: four scenario files (dev / held-out × realistic / stress) with 160 / 220 / 320 / 440
+  scenarios. Dev-realistic is exactly the legacy 160 (tested).
+  - The stress catalogue has the 16 single levels plus 6 combined disruptions per trip (`disruptions_stress.yaml`).
+  - Stress IDs carry `__stress__`.
+- **Stress option profile** (`STRESS_PROFILE`), off by default:
+  - `MockFlights.offer_count` (3 → 8). The extra offers are all dearer, so planning still books the same flight
+    (tested).
+  - `MockPlaces.extra_hotels` (+5 guesthouses).
+  - Two more pickup timings per direction. The default k = 4 still reaches the same first four.
+  - Search k for stress = 8 / 8 / 6 / 3.
+- **Combined disruptions in the search:** `RepairSearch(..., also=)`.
+  - Every invalidated target joins the region and every facts target expands and is fixed.
+  - The objective excludes all targets, and the GA's genes reach from all of them.
+  - A single event is unchanged: the ground truth recomputed exactly, so its source hashes were re-stamped with
+    `--rehash` and the new sha recorded as a deviation. E1's golden snapshot is unchanged.
+- **Ground truths for all four sets**, with no truncation anywhere:
+  - dev-stress: 220 scenarios; 20–21 per drift setting have more than 500 complete repairs (max 3,912);
+  - held-out realistic and held-out stress: generated before the freeze, and only their integrity was inspected.
+- **`eval/stats.py`** (standard library only):
+  - exact / normal Wilcoxon signed-rank with Pratt zeros;
+  - exact sign test;
+  - Holm adjustment;
+  - rank-biserial effect size;
+  - trip-cluster bootstrap CIs;
+  - Pareto comparison.
+- **`eval/experiments.py`:** every arm on every scenario × drift (× seed), scored identically: validation, conflict,
+  silent failure, the four terms, scope vs the ground truth, requirement satisfaction, legacy P/R, and cost. Outputs
+  go to `eval/results_v3/`, never to `results/` or `results_v2/`. The held-out split refuses to run unless the
+  pre-registration is frozen and its self-excluding digest verifies.
+- **`eval/report_v3.py`:** the pre-registered H1–H4 tests, Holm, the GA verdict, secondary analyses and per-arm
+  tables.
+- **`eval/freeze_preregistration.py`:** fills in the trip lists, tuned widths and all ground-truth hashes, refuses
+  unless every ground truth verifies, sets `frozen`, and records the digest. It is tested on a copy.
+- **Pre-registration additions, written before any result was read:**
+  - the tuning rules (W* and the H3-matched E2′);
+  - the exact test for each hypothesis, and the Holm family;
+  - drift on as the primary setting;
+  - the "large space" secondary subset.
+- **Bug fixed:** `stats.wilcoxon` returned no `zeros` field when every difference was zero, so the report crashed
+  on all-ties. A synthetic-data test found it.
+
+### Tuning and dev results (tuning data only; not evidence for any claim)
+- **Beam width (pre-registered rule):** W* = **10**. Mean feasible fitness by width: 1: −0.3248, 3: −0.3211,
+  5: −0.3227, 10: −0.3195. Fitness is not monotone in width.
+- **H3-matched E2′ = width 50:** the largest width whose dev-stress evaluations (23.7) do not exceed E4's (33.1).
+- **Full dev run:** 15,960 runs (9 arms, 380 scenarios, 5 seeds for E3/E4/RS, drift on and off), none timed out.
+  Results are in `eval/results_v3/dev/full/` and the analysis in `eval/results_v3/dev/ANALYSIS_DEV.md`.
+- **Dev verdicts (drift on):**
+  - **H1 holds:** E2 dominates E1g 43 times vs 5 (Holm p 8e-8).
+  - **H2 does not hold:** E3 vs RS is 0 better / 4 worse / 206 tied.
+  - **H3 does not hold:** E4 vs E2′ is 5 / 1 / 204, exact p 0.094, Holm 0.19.
+  - **H4 holds:** E1 has 20 silent failures (the ten-hour delays), E2–E4 have none.
+  - **GA not justified on dev**, including the large-space subset.
+- **Two report bugs found on dev and fixed before the freeze** (recorded as deviations):
+  - seed means of equal fitness differed by about 1e-17 and entered the Wilcoxon test as random-sign differences;
+    differences are now rounded to 1e-9;
+  - Holm p-values were rounded to 6 decimals and printed as 0.
+- **One criterion changed before the freeze** (recorded as a deviation): H2/H3 now require "rank-biserial > 0"
+  instead of "median Δ > 0". About 97 % of dev pairs tie exactly, so the median was always 0 and the hypotheses could
+  never hold. Both rules give the same dev verdict.
+- **Precision/recall:** filled only for E1/B1/B2 on the realistic catalogue, labelled legacy, to keep Table I
+  reproducible. No v3 test or verdict uses them.
+- **Checks:** 628 tests pass; the E1 golden snapshot, the manifest and all four ground truths verify.
+- **Frozen (2026-11-02, on the team's go-ahead):** `eval/preregistration.yaml` is `status: frozen`, sha256
+  `d2bd96c9808a15423fe408182cc9d50da4b4d13bb49b5fdae36748636bf57184`. The digest is computed with its own field
+  blanked.
+  - `frozen_values` records W* = 10, E2′ = 50 and the sha256 of all four ground truths. The split lists the 10 dev
+    and 20 held-out trips.
+  - `experiments.py --split heldout` now verifies this digest before it runs. Any later change must go under
+    `deviations`.
+  - The freeze test now turns its copy back into a draft first, because the real file is frozen. All 628 tests
+    pass, and the E1 golden snapshot and the manifest are unchanged.
+- **Next (Phase 10):** the single held-out run, then the held-out analysis.
+
+## Hybrid, Phase 10 — The held-out run and final v3 results (2026-11-02)
+
+### Run
+- **One logical run against the frozen pre-registration** (digest `d2bd96c9…7184`, verified by every manifest).
+  - Split into 16 processes: realistic/stress × drift on/off × 4 groups of 5 trips. `--seeds 20 --beam-width 10`.
+  - The launcher is `eval/results_v3/heldout/RUN_COMMANDS.sh`. On dev, splitting by trip reproduced the
+    single-process rows exactly (308/308).
+  - E2′ (width 50) ran as 4 more processes.
+- **Two launches.** In the first, the trip-group array was named `GROUPS`, a read-only bash built-in. Every main process
+  ran 0 scenarios, so no held-out main result existed or was seen; the empty outputs were deleted. The E2′ processes
+  don't use the array and are kept from that launch. The second launch ran the main processes only.
+- **The machine slept during the run.** The logs jump by about 11 h. This affects latency and some safety timeouts.
+
+### Verification
+- **Complete:** 100,320 main rows plus 1,520 E2′ rows.
+  - 760 scenarios per drift condition (320 realistic, 440 stress), all 20 held-out trips, 66 rows per scenario.
+  - No missing or duplicate scenarios, arms or seeds.
+  - Ground truths verify against the frozen hashes. The manifest and the E1 golden snapshot are unchanged.
+- **62 runs hit the search safety timeout.** By arm: RS 33, E4 17, E3 11, E2 1; 0 on dev. All are flagged
+  `timed_out/truncated` and kept.
+  - 58 of the 60 feasible ones equal their other seeds' fitness. 2 ended infeasible, both in drift off.
+  - Excluding the 22 affected drift-on scenarios leaves every verdict unchanged.
+- **Legacy Table I:** the legacy benchmark still reproduces all 1,920 rows (every column except latency).
+
+### Held-out verdicts (drift on, Holm over 6 tests; `eval/results_v3/heldout/ANALYSIS_HELDOUT.md`)
+- **H1 holds:** E2@10 dominates E1g 77 times, is dominated 9 times (Holm p 8.0e-14).
+- **H2 does not hold, and is significant the other way:** E3 vs RS is 3 better / 14 worse / 403 tied
+  (r −0.645, Holm p 0.0105).
+- **H3 holds:** E4@10 vs E2@50 is 11 / 0 / 409 (r +1.0, mean Δ +0.0042 [0.0007, 0.0084], Holm p 0.0020).
+  - Caveat: on held-out, E4 used 32.0 full evaluations and E2′ 23.6. The width was matched on dev.
+- **H4 holds:** E1 has 40 silent failures (`outbound_delay_600` in both catalogues); E2, E3 and E4 have 0
+  (Holm p 9.1e-12 each).
+- **GA not justified** by the pre-registered rule.
+- **Drift off gives the same verdicts.**
+- **Recommended system arm:** E2 at W* = 10.
+- **Final report:** `eval/results_v3/HELDOUT_FINAL_REPORT.md`. Supplementary analyses are in
+  `eval/results_v3/heldout/supplementary/`: dominance vs E1, optimality gap to EXH, timeout sensitivity and drift-off
+  tests.
+
+### Deviations found after the freeze (not in the frozen file, which stays unchanged)
+- **D1 — safety timeout 60 s, not 2 s.** `eval/experiments.py:145` passes `timeout_s=60` to every search arm except
+  EXH, while the pre-registration says `wall_clock_timeout_s: 2`.
+  - It applied equally to dev and held-out. It was missed until the held-out analysis.
+  - Under 2 s, thousands of runs would have been cut short in this parallel run.
+- **D2 — the main run was launched twice** (see Run). No result was seen from the first launch.
+- **D3 — the frozen pre-registration and the results are not committed**, as instructed. There is no third-party
+  timestamp of the freeze.
+- **D4 — pre-registered items not produced:**
+  - not done: the weight sensitivity analysis (×0.5 / ×1.5), `api_requests_unique`, the preference term and the
+    manual labels;
+  - not produced by `report_v3.py`: dominance vs E1 (named as the primary metric) and the optimality gap to EXH. Both
+    are computed as supplementary.
+- **Next:** state D1–D4 in the paper. Decide whether to run the weight sensitivity analysis and the manual labelling
+  before submission.
+
 ## Checklist
 
 ### Phase 3 — Orchestrator

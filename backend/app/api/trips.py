@@ -238,6 +238,10 @@ async def inject_disruption(
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc).strip("'\""))
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc))
+    # A fresh simulator with the same seed repeats its IDs, so number them per trip: the decision log
+    # and the Risk Gate actions are linked to their disruption by this ID.
+    count = len(disruption_repo.list_disruptions(trip_id, session))
+    event = event.model_copy(update={"event_id": f"{event.event_id}-{count + 1}"})
 
     ledger = approval_repo.load_ledger(trip_id, session)
     before = copy.deepcopy(store) if body.compare_baseline else None
@@ -258,7 +262,7 @@ def _record_outcome(trip_id: str, strategy: str, outcome, store: GraphStore, led
     """Persist a handled disruption (graph, gate actions, trace) and push it to live clients."""
     from app.api.live import bus, node_states, publish_actions
 
-    if outcome.status in ("replanned", "no_effect"):
+    if outcome.status in ("replanned", "no_effect", "conflict"):     # a conflict still applied the event
         graph_repo.save_graph(store, session)
         approval_repo.save_ledger(ledger, session)
     data = outcome.to_dict()
@@ -283,6 +287,21 @@ def get_disruptions(trip_id: str, session: Session = Depends(get_session)) -> li
                                   status=r.status, strategy=r.strategy, created_at=r.created_at.isoformat(),
                                   outcome=r.get_outcome())
             for r in disruption_repo.list_disruptions(trip_id, session)]
+
+
+@router.get("/{trip_id}/disruptions/{event_id}/decision",
+            summary="Decision log of one disruption: affected tasks, alternatives, selected repair, "
+                    "validation and approvals")
+def get_decision_log(trip_id: str, event_id: str, session: Session = Depends(get_session)) -> dict:
+    from app.core.repair.decision import decision_log
+
+    _load_trip(trip_id, session)
+    record = disruption_repo.get_disruption(trip_id, event_id, session)
+    if record is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"No disruption '{event_id}' for trip '{trip_id}'.")
+    actions = [a.to_dict() for a in approval_repo.list_actions(session, trip_id=trip_id) if a.event_id == event_id]
+    return decision_log(trip_id, record.strategy, record.created_at.isoformat(), record.get_outcome(), actions)
 
 
 @router.post("/{trip_id}/monitor/poll", response_model=list[DisruptionResponse],

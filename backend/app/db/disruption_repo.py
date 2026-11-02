@@ -29,6 +29,11 @@ def record_disruption(session: Session, *, trip_id: str, strategy: str, outcome:
     return record
 
 
+def get_disruption(trip_id: str, event_id: str, session: Session) -> DisruptionRecord | None:
+    return session.exec(select(DisruptionRecord).where(DisruptionRecord.trip_id == trip_id,
+                                                       DisruptionRecord.event_id == event_id)).first()
+
+
 def list_disruptions(trip_id: str, session: Session) -> list[DisruptionRecord]:
     return list(session.exec(
         select(DisruptionRecord).where(DisruptionRecord.trip_id == trip_id).order_by(DisruptionRecord.id)
